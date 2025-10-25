@@ -1,0 +1,78 @@
+@import "./GlobalStyles/GlobalStyles.scss";
+
+
+.SearchPanel {
+  position: fixed;
+  top: 0;
+  left: -350px; // ẩn đi ban đầu
+  width: 400px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: $background-color;
+  border-right: 1px solid gray;
+  
+  box-shadow: 8px 0 20px rgba(255, 254, 254, 0.1);
+  padding: 20px;
+  opacity: 0;
+  transition: left 0.4s ease, opacity 0.3s ease;
+  z-index: 1000;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .searchBox {
+    display: flex;
+    align-items: center;
+    background: #efefef;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 20px;
+
+    svg {
+      color: #888;
+      font-size: 16px;
+    }
+
+    input {
+      border: none;
+      outline: none;
+      background: transparent;
+      margin-left: 8px;
+      flex: 1;
+      font-size: 14px;
+    }
+  }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+
+      &:hover {
+        background: #f9f9f9;
+      }
+    }
+  }
+
+  &.active {
+    left: 65px; // trượt ra sau sidebar
+    opacity: 1;
+  }
+}

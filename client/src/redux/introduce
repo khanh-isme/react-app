@@ -1,0 +1,23 @@
+Cụ thể Redux làm gì?
+
+Lưu state chung
+
+Thay vì truyền props vòng vòng giữa nhiều component, Redux cho lưu tất cả state quan trọng ở 1 "store" trung tâm.
+
+Ví dụ: thông tin user đăng nhập, giỏ hàng, theme (dark/light), token, …
+
+Quản lý logic thay đổi state
+
+Các action (ví dụ: ADD_TO_CART, LOGOUT_USER) mô tả "muốn làm gì".
+
+Reducer quyết định "thay đổi state như thế nào".
+
+Dễ debug & predict
+
+Redux tuân thủ nguyên tắc: state chỉ thay đổi qua action → reducer.
+
+Nhờ vậy bạn dễ theo dõi state thay đổi ở đâu, lúc nào, tại sao.
+
+Chia sẻ state toàn cục
+
+Component ở bất kỳ đâu đều có thể lấy state từ store, không cần truyền props từ cha xuống con.

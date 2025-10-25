@@ -1,0 +1,54 @@
+.notification {
+  position: fixed; // cố định trên màn hình (kéo trang không mất)
+  top: 20px;
+  right: -350px; // bắt đầu ngoài khung nhìn
+  width: 18%;
+  padding: 15px 20px;
+  background: #fff;
+  color: #050505;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+    padding: 15px 20px;
+  font-size: 15px;
+  transition: right 0.4s ease, opacity 0.3s ease;
+  opacity: 0;
+  z-index: 9999;
+
+  &.active {
+    right: 20px; // trượt vào vị trí hiển thị
+    opacity: 1;
+  }
+
+  // biểu tượng thông báo (nếu có)
+  .icon {
+    background: #5f7fab; 
+    color: white;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  // nội dung text
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+
+    .title {
+      font-weight: 600;
+    }
+
+    .message {
+      color: #65676b;
+      font-size: 14px;
+    }
+  }
+}

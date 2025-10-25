@@ -1,0 +1,7 @@
+Tái sử dụng code: Các hàm dùng chung cho nhiều component (ví dụ format ngày tháng, xử lý chuỗi, số, validate dữ liệu, …).
+
+Tách logic khỏi UI: Giúp component gọn gàng, tập trung vào hiển thị, còn xử lý logic để utils lo.
+
+Dễ bảo trì: Khi muốn thay đổi cách xử lý, chỉ sửa trong utils, không phải đi chỉnh ở từng component.
+
+Giảm trùng lặp code: Tránh copy-paste logic sang nhiều nơi.

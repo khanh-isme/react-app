@@ -1,0 +1,123 @@
+.instaPost {
+  width: 470px;
+  background-color: #000;
+  color: #fff;
+ 
+  border-radius: 10px;
+  margin: 20px auto;
+  font-family: 'Segoe UI', sans-serif;
+
+  .postHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+
+    .userInfo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #262626;
+      }
+
+      .username {
+        font-weight: 600;
+      }
+
+      .time {
+        color: #a8a8a8;
+        font-size: 14px;
+      }
+
+      .dot {
+        color: #a8a8a8;
+      }
+    }
+
+    .more {
+      font-size: 24px;
+      cursor: pointer;
+    }
+  }
+
+  .postImage {
+    width: 100%;
+    img {
+      width: 100%;
+      display: block;
+      border-top: 1px solid #262626;
+      border-bottom: 1px solid #262626;
+    }
+  }
+
+  .postActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 14px;
+
+    .leftActions {
+      display: flex;
+      gap: 16px;
+    }
+
+    .icon {
+      font-size: 22px;
+      cursor: pointer;
+      transition: 0.2s;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+  }
+
+  .likes {
+    font-weight: 600;
+    padding: 0 14px;
+  }
+
+  .caption {
+    padding: 6px 14px;
+
+    .username {
+      font-weight: 600;
+      margin-right: 6px;
+    }
+  }
+
+  .comments {
+    color: #a8a8a8;
+    font-size: 14px;
+    padding: 0 14px 8px 14px;
+  }
+
+  .addComment {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-top: 1px solid #262626;
+
+    input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: #fff;
+      outline: none;
+      font-size: 14px;
+    }
+
+    button {
+      background: none;
+      border: none;
+      color: #0095f6;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+}

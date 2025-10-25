@@ -1,0 +1,63 @@
+@import "../../components/GlobalStyles/GlobalStyles.scss";  
+
+
+
+.registerContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* canh dọc */
+  align-items: center;     /* canh ngang */
+  height: 100vh;
+  background: #f0f2f5;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #040d18;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #606770;
+  margin-bottom: 20px;
+}
+
+.registerForm {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+  input {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+
+  button {
+    @include button-style($primary-color);
+  }
+
+}
+
+.loginLink {
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
+
+  a {
+    color: #1877f2;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

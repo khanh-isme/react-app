@@ -1,0 +1,64 @@
+
+@import "../../components/GlobalStyles/GlobalStyles.scss";  
+
+
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* canh dọc */
+  align-items: center;     /* canh ngang */
+  height: 100vh;           /* chiếm toàn bộ chiều cao màn hình */
+  background: #f0f2f5;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 20px;
+  
+  border-radius: 50%;
+}
+
+.loginForm {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+  input {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+
+   button {
+    @include button-style($primary-color);
+  }
+}
+
+.forgotLink {
+  color: #031b3a;
+  font-size: 14px;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.signupBtn {
+  background: #000000 !important;
+
+  &:hover {
+    background: #2d5e24 !important;
+  }
+}
+
+.regis{
+  color: #000;
+}
