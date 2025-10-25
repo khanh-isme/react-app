@@ -1,0 +1,42 @@
+ [ Client (Browser / React App) ]
+                │
+                ▼
+      gửi request (HTTP: GET/POST/PUT/DELETE)
+                │
+                ▼
+        [ Router (Express) ]
+   - Định nghĩa endpoint (vd: /api/users)
+   - Chỉ định controller nào sẽ xử lý
+                │
+                ▼
+     [ Controller (Business Logic) ]
+   - Nhận request từ Router
+   - Gọi Model để lấy dữ liệu / xử lý logic
+   - Chuẩn bị response
+                │
+                ▼
+        [ Model (Data Layer) ]
+   - Giao tiếp với Database
+   - Truy vấn (query), thêm, sửa, xóa
+                │
+                ▼
+        [ Database (MySQL, MongoDB, ...) ]
+   - Lưu trữ dữ liệu thực tế
+                │
+                ▼
+     [ Model trả kết quả cho Controller ]
+                │
+                ▼
+ [ Controller format dữ liệu → gửi lại Router ]
+                │
+                ▼
+ [ Router trả response về Client (JSON/HTML) ]
+                │
+                ▼
+ [ Client nhận response → hiển thị UI ]
+
+
+
+những thứ cần tìm hiểu kĩ hơn: route
+
+

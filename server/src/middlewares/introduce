@@ -1,0 +1,15 @@
+Trong Node.js / Express
+
+middlewares là hàm trung gian chạy giữa request và response.
+
+🔑 Tác dụng:
+
+Xác thực (authentication) → kiểm tra token, session.
+
+Phân quyền (authorization) → chặn user không có quyền.
+
+Xử lý request body (JSON, form-data, …).
+
+Logging → log request/response.
+
+Error handling → gom lỗi và trả về cho client.

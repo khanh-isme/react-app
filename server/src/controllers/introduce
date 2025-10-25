@@ -1,0 +1,10 @@
+Trong mô hình MVC (Model – View – Controller):
+
+Model: Xử lý dữ liệu, giao tiếp với database.
+
+View: Giao diện hiển thị cho người dùng (thường là HTML, React, Angular, …).
+
+Controller: Là bộ điều khiển trung gian. Nó nhận request từ client, gọi đến model (nếu cần), xử lý logic, rồi trả kết quả (response) về cho client.
+
+👉 Nói đơn giản:
+Controller = cầu nối giữa router và model.
