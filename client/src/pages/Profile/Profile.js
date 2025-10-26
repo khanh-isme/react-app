@@ -23,13 +23,14 @@ function Profile() {
   }
 
 
+
   return (
     <div className="profile-container">
       <div className="profile-header">
 
         <div className="profile-avatar">
           <img
-            src={user.user.avt || AvatarDefault}
+            src={ AvatarDefault}
             alt="avatar"
             className="avatar-img"
           />
@@ -37,11 +38,11 @@ function Profile() {
 
         <div className="profile-info">
           <div className="profile-username">
-            <h2>{user.user.username}</h2>
+            <h2>{user.username}</h2>
             <span className="settings-icon">⚙️</span>
           </div>
           
-          <p className="realname">{user.user.fullname || "Văn Khánh"}</p>
+          <p className="realname">{user.fullname || "Văn Khánh"}</p>
 
           <div className="profile-stats">
             <span>0 posts</span>
@@ -49,7 +50,7 @@ function Profile() {
             <span>8 following</span>
           </div>
 
-          <p className="nickname">@{user.user.username}</p>
+          <p className="nickname">@{user.username}</p>
 
           <div className="profile-buttons">
             <button className="edit-btn">Edit profile</button>

@@ -14,12 +14,13 @@ import styles from "./Header.module.scss";
 import { Link } from "react-router-dom";
 
 import SearchPanel from "../SearchPanel.js"
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 function Header() {
 
   const[showSearch,setShowSearch] = useState(false);
-
+  const clickSearchPanel = useRef("auto");
+ 
 
 
   return (
@@ -33,24 +34,28 @@ function Header() {
             <span>Home</span>
           </Link>
         </li>
+
+
         <li>
-          <div className={styles.item} 
-            onClick={() => {      
-                setShowSearch((prev) => !prev);
+          <div className={styles.item} style={{ pointerEvents: clickSearchPanel.current }}
+              onClick={() => { 
+                
+                  setShowSearch((prev) => !prev);
+                  clickSearchPanel.current="none";
               }
             } 
           >
-
             <FaSearch className={styles.icon} />
             <span>Search</span>
           </div>
 
-          {showSearch && <SearchPanel onClose={() => {
-                setShowSearch(false)
-              } 
-            }/>}
-
+          {showSearch && <SearchPanel 
+            onClose={() => { setShowSearch(false) } } 
+            clickSearchPanel={clickSearchPanel}
+          />}
         </li>
+
+
         <li>
           <Link to="/explore" className={styles.item}>
             <FaRegCompass className={styles.icon} />

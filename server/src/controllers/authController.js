@@ -81,8 +81,7 @@ export const loginUser = async (req, res) => {
 
 
 export const getCurrentUser = (req, res) => {
-
-  console.log(req.user)
+  
   if (!req.user) {
     return res.status(401).json({ message: "Chưa đăng nhập" });
   }

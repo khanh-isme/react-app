@@ -2,6 +2,8 @@ import * as url from "../url";
 /**
  * @returns {Promise<string>} message từ server
  */
+
+import { Notification } from "../../components/Notification/Notification";
 export const registerUser = async (formData) => {
   try {
     const res = await fetch(url.Register, {
@@ -45,7 +47,6 @@ export const loginUser = async (username,password) =>{
 
 
   }catch (err) {
-    console.error("Lỗi API:", err);
     throw err; // quăng lỗi để component bên ngoài xử lý tiếp
   }
 

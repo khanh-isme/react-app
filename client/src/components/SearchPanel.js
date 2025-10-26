@@ -2,13 +2,14 @@ import React, { useEffect, useRef } from "react";
 import { FaSearch } from "react-icons/fa";
 import "./SearchPanel.scss";
 
-function SearchPanel({ onClose }) {
+function SearchPanel({ onClose,clickSearchPanel }) {
   const panelRef = useRef(null);
 
   useEffect(() => {
     function handleClickOutSide(event) {
       if (panelRef.current && !panelRef.current.contains(event.target)) {
         onClose();
+        clickSearchPanel.current="auto";
       }
     }
 

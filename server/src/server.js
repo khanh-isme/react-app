@@ -33,7 +33,6 @@ app.use(
 
 // Routes
 app.use("/api/auth",authRoutes);
-
  
 app.use(morgan('combined'))
 
