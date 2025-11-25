@@ -5,6 +5,8 @@ export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
+  const [Loading, setLoading] = useState(true);
+
   const [auth, setAuth] = useState(() => {
     const savedUser = localStorage.getItem("user");
     return savedUser ? { user: JSON.parse(savedUser) } : { user: null };
@@ -16,7 +18,7 @@ export function AuthProvider({ children }) {
       try {
         const res = await fetch("http://localhost:5000/api/auth/me", {
           method: "GET",
-          credentials: "include", 
+          credentials: "include",
         });
 
         const data = await res.json();
@@ -27,12 +29,12 @@ export function AuthProvider({ children }) {
         } else {
           console.warn(" Không hợp lệ:", data.message);
           setAuth({ user: null });
-          navigate("/login"); 
         }
       } catch (err) {
         console.error("❌ Lỗi kết nối server:", err);
         setAuth({ user: null });
-        navigate("/login");
+      } finally {
+        setLoading(false); // ✅ đã xác minh xong
       }
     };
 
@@ -45,7 +47,7 @@ export function AuthProvider({ children }) {
     else localStorage.removeItem("user");
   }, [auth]);
 
-  const login = (user) => setAuth({ user }); // Đăng nhập 
+  const login = (user) => setAuth({ user }); // Đăng nhập
 
   return (
     <AuthContext.Provider value={{ auth, login }}>

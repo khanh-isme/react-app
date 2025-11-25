@@ -3,7 +3,7 @@ import * as url from "../url";
  * @returns {Promise<string>} message từ server
  */
 
-import { Notification } from "../../components/Notification/Notification";
+
 export const registerUser = async (formData) => {
   try {
     const res = await fetch(url.Register, {
@@ -13,12 +13,14 @@ export const registerUser = async (formData) => {
       credentials: "include"     // nếu cần gửi cookie/session
     });
 
+    const result = await res.json();
+
     if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+      // Trả luôn message để handle phía UI
+      return { error: true, status: res.status, message: result.message };
     }
 
-    const result = await res.json();
-    return result;
+    return { error: false, data: result ,message: "dang ki thanh cong"};
   } catch (err) {
     console.error("Lỗi API:", err);
     throw err; 
@@ -43,6 +45,7 @@ export const loginUser = async (username,password) =>{
       throw new Error(errorData?.message || `HTTP ${res.status}`);
     }
     const result = await res.json();
+    
     return result;
 
 

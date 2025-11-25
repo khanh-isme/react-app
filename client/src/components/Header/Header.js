@@ -13,14 +13,15 @@ import {
 import styles from "./Header.module.scss";
 import { Link } from "react-router-dom";
 
-import SearchPanel from "../SearchPanel.js"
+import SearchPanel from "../SearchPanel.js";
+import UploadPost from "../../pages/Upload/UploadPost.js";
 import { useRef, useState } from "react";
 
 function Header() {
 
   const[showSearch,setShowSearch] = useState(false);
   const clickSearchPanel = useRef("auto");
- 
+  const[showUpLoad,setShowUpLoad] = useState(false);
 
 
   return (
@@ -35,7 +36,7 @@ function Header() {
           </Link>
         </li>
 
-
+        
         <li>
           <div className={styles.item} style={{ pointerEvents: clickSearchPanel.current }}
               onClick={() => { 
@@ -80,12 +81,26 @@ function Header() {
             <span>Notifications</span>
           </Link>
         </li>
+
+
         <li>
-          <Link to="/create" className={styles.item}>
+          <div className={styles.item} onClick ={ () => {
+            setShowUpLoad(true);
+          }}>
+
             <FaPlus className={styles.icon} />
             <span>Create</span>
-          </Link>
+
+          </div>
+          
+          {showUpLoad && <UploadPost onClose={()=>{
+              setShowUpLoad(false);
+          }}/>}
         </li>
+
+
+
+
         <li>
           <Link to="/profile" className={styles.item}>
             <FaUserCircle className={styles.icon} />

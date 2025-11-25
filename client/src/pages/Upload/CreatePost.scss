@@ -1,0 +1,273 @@
+/* Overlay mờ nền */
+.create-post-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Popup chính */
+.create-post-popup {
+  width: 900px;
+  height: 600px;
+  background: #181818;
+  color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: popupFade 0.3s ease;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes popupFade {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Header */
+.create-post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  border-bottom: 1px solid #333;
+  font-weight: 500;
+  position: relative;
+    h3{
+        margin-left: 30px;
+    }
+  .close-btn {
+    position: absolute;
+    left: 18px;
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+  }
+
+  .share-btn {
+    background: transparent;
+    border: none;
+    color: #0095f6;
+    font-weight: 600;
+    cursor: pointer;
+  }
+}
+
+/* Body */
+.create-post-body {
+  display: flex;
+  flex: 1;
+}
+
+/* Bên trái: ảnh */
+.create-post-image {
+  flex: 1.3;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #333;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .empty-preview {
+    color: #777;
+  }
+}
+
+/* Bên phải: thông tin */
+.create-post-info {
+  flex: 1;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: gray;
+    }
+
+    .username {
+      font-weight: 600;
+    }
+  }
+
+  .caption-input {
+    margin-top: 15px;
+    height: 100px;
+    background: transparent;
+    border: none;
+    resize: none;
+    color: white;
+    outline: none;
+  }
+
+  .post-options {
+    margin-top: 10px;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    padding: 10px 0;
+
+    .option-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      cursor: pointer;
+      color: #ccc;
+
+      &:hover {
+        color: white;
+      }
+    }
+  }
+
+  .share-to {
+    margin-top: 15px;
+
+    .share-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+
+      .share-user {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .avatar.small {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          background: gray;
+        }
+
+        .username {
+          display: block;
+          font-weight: 600;
+        }
+
+        .subtext {
+          font-size: 12px;
+          color: #aaa;
+        }
+      }
+    }
+  }
+
+  /* Nút bật tắt */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #555;
+      transition: 0.3s;
+      border-radius: 34px;
+
+      &:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+      }
+    }
+
+    input:checked + .slider {
+      background-color: #0095f6;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(18px);
+    }
+  }
+}
+
+.create-post-image {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: black;
+
+  img.preview-img {
+    width: 100%;
+    height: auto;
+    max-height: 600px;
+    object-fit: contain;
+  }
+
+  .nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    color: white;
+    background: rgba(0, 0, 0, 0.4);
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 50%;
+    user-select: none;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    &.prev {
+      left: 10px;
+    }
+
+    &.next {
+      right: 10px;
+    }
+  }
+}

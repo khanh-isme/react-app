@@ -9,6 +9,8 @@ import authRoutes from "./routes/authRoutes.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { authMiddleware } from "./middlewares/authMiddleware.js";
+import { connectDB } from "./database/conect.js";
+connectDB();
 
 
 const app = express();
@@ -52,15 +54,7 @@ app.get("/api/hello", (req, res) => {
   res.json({ message: "Hello from backend!" });
 });
 
-app.get('/test-db', async (req, res) => {
-  try {
-    const result = await testConnection();
-    res.json({ message: 'Database connected!', result });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Database connection failed' });
-  }
-});
+
 
 app.get('/news', (req, res) => {//(request,response) khi truy cập vào web nó sẽ gửi 1 yêu cầu lên sever thì biến request này nó sẽ chứ cái thông tin
   //ứng dụng gửi lên sever

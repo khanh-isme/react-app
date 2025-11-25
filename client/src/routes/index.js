@@ -9,18 +9,19 @@ import Register from '../pages/Register/Register.js';
 
 // dành cho những trang k cần đăng nhập vẫn xem được
 const publicRoutes =[
-    {path:'/', component: Home},
-    {path:'/following', component: Following},
-    {path:'/profile', component: Profile},
-    {path:'/upload', component: Upload, layout :null},
+    
     {path: '/login', component:Login, layout: null },
     {path: '/register', component:Register, layout: null },
 
     //khi không cấu hình 1 thành phần nào đó thì nó được mặc định là undefine
 ]
+const privateRoutes =[
+    {path:'/', component: Home},
+    {path:'/following', component: Following},
+    {path:'/profile', component: Profile},
+    {path:'/upload', component: Upload, layout :null},
+]
 
 
-// cho các trang đăng nhập mới xem được còn nếu chưa đăng nhập thì lái sang phần login
 
-
-export{ publicRoutes}
+export{ publicRoutes,privateRoutes}

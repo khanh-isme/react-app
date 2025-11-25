@@ -10,6 +10,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault(); // ngăn reload
 
@@ -28,7 +29,7 @@ function Login() {
     } catch (err) {
       setMessage("");
       setTimeout(() => {
-        setMessage(err.message);
+        setMessage(err.message );
       }, 10);
     }
   };

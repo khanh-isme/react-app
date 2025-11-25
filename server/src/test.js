@@ -1,6 +1,6 @@
 // testAuthController.js
 import { register,loginUser } from "./controllers/authController.js";
-
+import {getUserByName} from "./database/user.repository.js"
 // Mock request và response
 const mockReq = {
   body: {
@@ -41,5 +41,7 @@ const mockRes1 = {
 
 // Gọi trực tiếp hàm loginUser
 (async () => {
-  await loginUser(mockReq1, mockRes1);
+  const user = await getUserByName("aa");
+  console.log(user);
+
 })();

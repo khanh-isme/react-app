@@ -1,4 +1,8 @@
 import jwt from 'jsonwebtoken'
+import mongoose from 'mongoose';
+import { getUserByName } from '../database/user.repository.js';
+import { User } from '../models/user.model.js';
+
 
 export const authMiddleware=(req,res,next) => {
     const token = req.cookies.token;
@@ -14,3 +18,5 @@ export const authMiddleware=(req,res,next) => {
         return res.status(403).json({ message: "Token không hợp lệ hoặc đã hết hạn" });
     }
 }
+
+

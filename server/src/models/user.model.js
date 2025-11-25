@@ -1,11 +1,7 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  id: {
-    type: Number,
-    required: true,
-    unique: true
-  },
+  
   name: {
     type: String,
     required: true,
@@ -14,7 +10,11 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  email: { type: String, default: "" },
+  avatarUrl: { type: String, default: "" },
+  displayName: { type: String, default: "" }
+  
 });
 
 // Tạo model

@@ -3,7 +3,7 @@ import { Hello } from "~/api/requests/demo.js";
 import styles  from "./Home.module.scss"
 import { AuthContext } from "../../redux/AuthContext";
 import {Notification} from "../../components/Notification/Notification.js";
-import InstagramPost from "../../components/Post/InstagramPost.js";
+import InstagramPost from "../Post/InstagramPost.js";
 import testImg from "./test.jpg"
 function Home() {
   const [message, setMessage] = useState("");

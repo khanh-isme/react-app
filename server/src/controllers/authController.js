@@ -1,89 +1,94 @@
 import bcrypt from "bcrypt";
-import UserModel from "../models/userModel.js";
+import {getUserByName,createUser} from "../database/user.repository.js"
 import { generateToken } from "../utils/jwt.js";
+import { User } from "../models/user.model.js";
 
 
-
-// Hàm xử lý đăng ký
 export const register = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    
+    const { name, password  } = req.body;
 
-    // Kiểm tra input
-    if (!username || !password) {
-      return res.status(400).json({ message: "Thiếu username hoặc password" });
+    if (!name || !password) {
+      return res.status(400).json({ message: "Thiếu thông tin" });
     }
 
-    // Hash mật khẩu
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const exist = await getUserByName(name);
+    if (exist) {
+      return res.status(409).json({ message: "Username đã tồn tại" });
+    }
 
-    // Lưu vào DB
-    const result = await UserModel.createUserdemo(username, hashedPassword);
+    const hashed = await bcrypt.hash(password, 10);
+    console.log(hashed);
+
+    const user = await createUser({
+      name: name,
+      password: hashed,
+      avatarUrl: ""
+    });
 
     res.status(201).json({
-      message: "Đăng ký thành công",
-      userId: result.insertId,
+      message: "✅ Đăng ký thành công",
+      user: {
+        id: user._id,
+        name: user.name,
+      }
     });
   } catch (err) {
-    console.error("Lỗi đăng ký:", err);
+    console.error("❌ Đăng ký lỗi:", err);
     res.status(500).json({ message: "Lỗi server" });
   }
 };
 
 
+
 //hàm xử lý đăng nhập
-export const loginUser = async (req, res) => {
-  
-  const { username, password } = req.body;
-  
-  if (!username || !password) {
-    return res.status(400).json({ message: "Vui lòng nhập username và password" });
-  }
 
-  try {
-    const rows = await UserModel.findByUsername(username);    
-
-    if (rows.length === 0) {
-      return res.status(401).json({ message: "Sai username hoặc password" });
-    }
-
-    const user = rows[0];
-
-    // Nếu có hash bằng bcrypt:
-     const isMatch = await bcrypt.compare(password, user.password);
-     if (!isMatch) return res.status(401).json({ message: "Sai username hoặc password" });
-
-    // ✅ Không trả password về client
-    delete user.password;
-
-    const token = generateToken(user);
-
-    // 🍪 Gửi token qua cookie
-    res.cookie("token", token, {
-      httpOnly: true,     // bảo mật: JS không đọc được
-      secure: false,      // đặt true nếu chạy HTTPS
-      sameSite: "Lax",    // tránh CSRF cơ bản
-      maxAge: 24 * 60 * 60 * 1000 // 1 ngày
-    });
-
-    console.log("Token:", req.cookies?.token);
-
-    return res.json({
-      user
-    });
-
-    
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Lỗi server" });
-  }
-};
-
-
-export const getCurrentUser = (req, res) => {
+export const getCurrentUser =  async(req, res) => {
   
   if (!req.user) {
     return res.status(401).json({ message: "Chưa đăng nhập" });
   }
-  return res.json({ user: req.user });
+
+  const user = await User.findById(req.user.id).select("-password");
+  res.json({ user });
+};
+
+
+export const loginUserMongo = async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "Thiếu thông tin" });
+  }
+
+  try {
+    const user = await getUserByName(username); // ✅ object hoặc null
+
+    if (!user) {
+      return res.status(401).json({ message: "Sai username hoặc password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Sai username hoặc password" });
+    }
+
+    delete user.password;
+
+    const token = generateToken(user);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Lax",
+      maxAge: 86400000
+    });
+
+    return res.json({ user });
+
+  } catch (err) {
+    console.error("Login error:", err);
+    return res.status(500).json({ message: "Lỗi server" });
+  }
 };
