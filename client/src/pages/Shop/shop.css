@@ -1,0 +1,58 @@
+/* Shop.css */
+
+.shop-container {
+  width: 100%;        /* Mở rộng 100% chiều ngang */
+  max-width: none;    /* Bỏ giới hạn chiều rộng cũ */
+  margin: 0;          /* Bỏ căn giữa */
+  padding: 40px;      /* Căn lề trong cho thoáng */
+  box-sizing: border-box; /* Đảm bảo padding không làm vỡ khung */
+  font-family: sans-serif;
+}
+
+/* Header: Chỉnh màu chữ thành TRẮNG để nổi trên nền đen */
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.shop-title-section h1 {
+  font-size: 28px;
+  margin: 0 0 5px 0;
+  color: #ffffff; /* Đổi thành màu trắng */
+}
+
+.shop-title-section p {
+  margin: 0;
+  color: #a1a1aa; /* Đổi thành màu xám sáng */
+  font-size: 15px;
+}
+
+/* Nút Giỏ hàng */
+.main-cart-btn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.main-cart-btn:hover {
+  background-color: #1d4ed8;
+}
+
+/* Lưới sản phẩm */
+.product-list {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 24px;       /* Tăng khoảng cách giữa các thẻ lên chút cho đẹp */
+  justify-content: flex-start; /* Căn trái để lấp đầy từ trái qua phải */
+  width: 100%;
+}

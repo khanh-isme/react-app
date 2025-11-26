@@ -1,6 +1,5 @@
 import Header from "../../Header/Header.js";
 
-import SidebarRight from "../../Sidebar-right/SidebarRight.js";
 import styles from "./DefaultLayout.module.scss";
 
 function DefaultLayout({children}) {
@@ -16,9 +15,7 @@ function DefaultLayout({children}) {
                     {children}
                 </div>
 
-                <div className={styles.sidebarRight}>
-                    <SidebarRight/>
-                </div>
+                
             </div>
         </div>
      );

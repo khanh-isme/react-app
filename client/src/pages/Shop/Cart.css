@@ -1,0 +1,182 @@
+/* Lớp phủ toàn màn hình (nền tối) */
+.cart-overlay {
+  position: fixed; /* Cố định vị trí */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Màu đen mờ 70% */
+  display: flex;
+  justify-content: center; /* Căn giữa ngang */
+  align-items: center;     /* Căn giữa dọc */
+  z-index: 1000;           /* Đảm bảo luôn nằm trên cùng */
+  backdrop-filter: blur(2px); /* Làm mờ nhẹ background phía sau (tùy chọn) */
+}
+
+/* Khung giỏ hàng chính */
+.cart-container {
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh; /* Không cao quá 90% màn hình */
+  overflow-y: auto; /* Nếu dài quá thì hiện thanh cuộn */
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  animation: popup 0.3s ease-out; /* Hiệu ứng bật lên */
+}
+
+/* Hiệu ứng zoom nhẹ khi hiện ra */
+@keyframes popup {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Nút quay lại */
+.cart-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.cart-nav:hover {
+  color: #2563eb;
+}
+
+.cart-title {
+  margin-bottom: 24px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #111; /* Hoặc màu trắng nếu app bạn đang full dark mode */
+}
+
+/* Thẻ sản phẩm */
+.cart-item {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.item-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-info h3 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.item-size {
+  margin: 0 0 10px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.price-tag {
+  color: #2563eb;
+  font-weight: 500;
+  margin-right: 20px;
+}
+
+.item-controls {
+  display: flex;
+  align-items: center;
+}
+
+/* Bộ chỉnh số lượng [-] 1 [+] */
+.quantity-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.qty-btn {
+  background: none;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  color: #666;
+}
+
+.qty-value {
+  padding: 0 10px;
+  font-weight: 500;
+}
+
+/* Tổng tiền từng món và nút xoá */
+.item-total-price {
+  font-weight: 600;
+  font-size: 16px;
+  margin-right: 20px;
+  min-width: 100px;
+  text-align: right;
+}
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: #ef4444; /* Màu đỏ */
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Phần Tổng cộng bên dưới */
+.cart-summary {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #555;
+}
+
+.summary-total {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.btn-checkout {
+  width: 100%;
+  background-color: #2563eb;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-checkout:hover {
+  background-color: #1d4ed8;
+}
+
+/* Ẩn giá mobile trên màn hình lớn */
+.item-price-mobile { display: none; }

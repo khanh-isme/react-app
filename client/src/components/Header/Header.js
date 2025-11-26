@@ -9,6 +9,10 @@ import {
   FaUserCircle,
   FaBars,
   FaThLarge,
+  FaStore, 
+  FaShoppingCart, 
+  FaCartPlus, 
+  FaShoppingBag
 } from "react-icons/fa";
 import styles from "./Header.module.scss";
 import { Link } from "react-router-dom";
@@ -37,6 +41,15 @@ function Header() {
         </li>
 
         
+        <li>
+          <Link to="/shop" className={styles.item}>
+            <FaStore className={styles.icon} />
+            <span>Shop</span>
+          </Link>
+        </li>
+
+
+
         <li>
           <div className={styles.item} style={{ pointerEvents: clickSearchPanel.current }}
               onClick={() => { 
@@ -107,6 +120,8 @@ function Header() {
             <span>Profile</span>
           </Link>
         </li>
+
+        
       </ul>
 
       <div className={styles.bottom}>

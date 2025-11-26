@@ -6,6 +6,7 @@ import Profile from '../pages/Profile/Profile.js';
 import Upload from '../pages/Upload';
 import Login from '../pages/Login/Login.js';
 import Register from '../pages/Register/Register.js';
+import Shop from '../pages/Shop/shop.js';
 
 // dành cho những trang k cần đăng nhập vẫn xem được
 const publicRoutes =[
@@ -20,6 +21,7 @@ const privateRoutes =[
     {path:'/following', component: Following},
     {path:'/profile', component: Profile},
     {path:'/upload', component: Upload, layout :null},
+    {path:'/shop', component: Shop},
 ]
 
 
