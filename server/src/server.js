@@ -11,6 +11,7 @@ import cookieParser from "cookie-parser";
 import { authMiddleware } from "./middlewares/authMiddleware.js";
 import { connectDB } from "./database/conect.js";
 import productRoutes from './routes/productRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 connectDB();
 
 
@@ -37,7 +38,7 @@ app.use(
 // Routes
 app.use("/api/auth",authRoutes);
 app.use('/api/products', productRoutes);
-
+app.use('/api/categories', categoryRoutes);
 
 
 

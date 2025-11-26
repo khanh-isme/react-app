@@ -5,3 +5,5 @@ Tách logic khỏi UI: Giúp component gọn gàng, tập trung vào hiển th�
 Dễ bảo trì: Khi muốn thay đổi cách xử lý, chỉ sửa trong utils, không phải đi chỉnh ở từng component.
 
 Giảm trùng lặp code: Tránh copy-paste logic sang nhiều nơi.
+
+
