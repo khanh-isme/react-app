@@ -10,6 +10,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { authMiddleware } from "./middlewares/authMiddleware.js";
 import { connectDB } from "./database/conect.js";
+import productRoutes from './routes/productRoutes.js';
 connectDB();
 
 
@@ -35,7 +36,11 @@ app.use(
 
 // Routes
 app.use("/api/auth",authRoutes);
- 
+app.use('/api/products', productRoutes);
+
+
+
+
 app.use(morgan('combined'))
 
 // Cấu hình template engine Handlebars
@@ -56,9 +61,7 @@ app.get("/api/hello", (req, res) => {
 
 
 
-app.get('/news', (req, res) => {//(request,response) khi truy cập vào web nó sẽ gửi 1 yêu cầu lên sever thì biến request này nó sẽ chứ cái thông tin
-  //ứng dụng gửi lên sever
-  //biến respones là biến trả về 
+app.get('/news', (req, res) => {
   console.log(req);
   res.render('news');
 })
