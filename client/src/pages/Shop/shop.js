@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaShoppingCart } from "react-icons/fa";
-import ProductCard from "./ProductCard";
+import ProductForm from "./ProductForm";
 import "./shop.css";
 import Cart from "./Cart";
 import { getAllProducts } from "../../api/requests/product";
@@ -18,7 +18,7 @@ function Shop() {
     }).format(amount);
   };
 
- useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       // Gọi hàm đã tách riêng
       const data = await getAllProducts();
@@ -53,16 +53,15 @@ function Shop() {
       {/* 3. Phần Lưới sản phẩm */}
       <div className="product-list">
         {products.map((product) => (
-          <ProductCard
-            // QUAN TRỌNG: MongoDB dùng _id
+          <ProductForm
             key={product._id}
-            // Truyền các prop vào ProductCard
+            _id={product._id} // THIẾT YẾU
             image={product.image}
             category={product.category}
             title={product.title}
             description={product.description}
-            // QUAN TRỌNG: Format giá trước khi truyền xuống
-            price={formatMoney(product.price)}
+            price={formatMoney(product.price)} // vẫn ok
+            sizes={product.sizes || []} // THIẾT YẾU
           />
         ))}
       </div>

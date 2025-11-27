@@ -4,6 +4,8 @@ import { IoClose } from "react-icons/io5"; // Icon dấu X đẹp hơn
 import './ProductDetailModal.css';
 
 const ProductDetailModal = ({ product, onClose }) => {
+
+  console.log(product);
   // State quản lý size đang chọn và số lượng
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);

@@ -1,4 +1,4 @@
-import { validateUsername, validatePassword } from './ValidationLogin';
+import { validateUsername, validatePassword } from '../utils/ValidationLogin';
 
 // a) Unit tests cho validateUsername()
 describe('Login Validation - validateUsername', () => {
@@ -37,7 +37,7 @@ describe('Login Validation - validateUsername', () => {
 // b) Unit tests cho validatePassword()
 describe('Login Validation - validatePassword', () => {
 
-  // 1. Test password rỗng
+ 
   test('should return error if password is empty', () => {
     expect(validatePassword('')).toBe("Vui lòng nhập mật khẩu.");
     expect(validatePassword(null)).toBe("Vui lòng nhập mật khẩu.");
@@ -54,6 +54,7 @@ describe('Login Validation - validatePassword', () => {
   });
 
   // 3. Test password không có chữ hoặc số
+
   test('should return error if password has no numbers', () => {
     expect(validatePassword('abcdef')).toBe("Mật khẩu phải chứa ít nhất 1 chữ cái và 1 số.");
   });
@@ -63,8 +64,9 @@ describe('Login Validation - validatePassword', () => {
   });
 
   // 4. Test password hợp lệ
+
   test('should return empty string if password is valid', () => {
     expect(validatePassword('admin123')).toBe("");
-    expect(validatePassword('Password@123')).toBe(""); // Code của bạn cho phép ký tự đặc biệt trong pass, miễn là có chữ và số
+    expect(validatePassword('Password@123')).toBe(""); 
   });
 });

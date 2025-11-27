@@ -1,17 +1,13 @@
 
 export const validateUsername = (username) => {
-  // 1. Kiểm tra rỗng
   if (!username || username.trim() === "") {
     return "Vui lòng nhập tên đăng nhập.";
   }
 
-  // 2. Kiểm tra độ dài (3-50 ký tự)
   if (username.length < 3 || username.length > 50) {
     return "Tên đăng nhập phải từ 3 đến 50 ký tự.";
   }
 
-  // 3. Kiểm tra ký tự hợp lệ (Chữ, số, dấu ., -, _)
-  // Regex: ^ (bắt đầu), [ ... ] (các ký tự cho phép), $ (kết thúc)
   const regex = /^[a-zA-Z0-9._-]+$/;
 
   if (!regex.test(username)) {
