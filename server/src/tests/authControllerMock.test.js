@@ -46,7 +46,7 @@ describe('5.1.2 Backend Mocking - AuthController', () => {
     expect(authService.authenticate).toHaveBeenCalledWith('testuser', 'password123');
 
     // Verify JWT Interaction
-    expect(jwtUtils.generateToken).toHaveBeenCalledWith(expect.objectContaining({ username: 'testuser' }));
+    expect(jwtUtils.generateToken).toHaveBeenCalledWith(expect.objectContaining({ name: 'testuser' }));
 
     // Verify Response: Cookie có được set không?
     expect(res.cookie).toHaveBeenCalledWith('token', mockToken, expect.any(Object));

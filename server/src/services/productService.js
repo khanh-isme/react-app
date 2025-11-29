@@ -7,9 +7,15 @@ export const createProduct = async (data) => {
 };
 
 // GET ALL (KHÔNG PHÂN TRANG)
-export const getAllProducts = async () => {
-  return await Product.find();
+// GET ALL với pagination
+export const getAllProducts = async (page = 1, limit = 10) => {
+  const skip = (page - 1) * limit;
+  return await Product.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
 };
+
 
 // GET BY ID
 export const getProductById = async (id) => {
