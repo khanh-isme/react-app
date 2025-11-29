@@ -10,6 +10,9 @@ export const loginUserMongo = async (req, res) => {
   try {
     const { username, password } = req.body;
 
+     if (!username || !password) {
+      return res.status(400).json({ message: "Thiếu thông tin" });
+    }
     // 1. Gọi Service để xử lý logic xác thực
     // Nếu sai pass hoặc user không tồn tại, service sẽ throw Error
     const user = await authenticate(username, password);
