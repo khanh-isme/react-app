@@ -17,16 +17,29 @@ export const createProduct = async (req, res) => {
 // GET ALL
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await productService.getAllProducts();
+    // Lấy page và limit từ query ?page=1&limit=10
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const result = await productService.getAllProducts(page, limit);
+
     res.status(200).json({
       success: true,
-      count: products.length,
-      data: products,
+      total: result.total,
+      totalPages: result.totalPages,
+      currentPage: result.currentPage,
+      count: result.products.length,
+      data: result.products,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Lỗi khi lấy danh sách sản phẩm", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi lấy danh sách sản phẩm",
+      error: error.message,
+    });
   }
 };
+
 
 // GET BY ID
 export const getProductById = async (req, res) => {

@@ -7,15 +7,24 @@ const ProductForm = ({ _id, image, category, title, description, price, sizes })
 
   const [showProductDetail, setShowProductDetail] = useState(false);
 
-  // Đóng gói đầy đủ product object
+  // Hàm format tiền tệ để hiển thị UI (chỉ dùng hiển thị)
+  const formatMoney = (amount) => {
+    if (!amount) return "0 ₫";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
+  };
+
+  // Đóng gói object data
   const productData = { 
     _id,
     image, 
     category, 
     title, 
     description, 
-    price,
-    sizes: sizes || [38, 39, 40, 41] // fallback
+    price, // Vẫn giữ là Number để Modal tính toán
+    sizes: sizes && sizes.length > 0 ? sizes : [38, 39, 40, 41] // fallback nếu rỗng
   };
 
   return (
@@ -35,22 +44,33 @@ const ProductForm = ({ _id, image, category, title, description, price, sizes })
         style={{ cursor: 'pointer' }}
       >
         <div className="product-image-container">
-          <img src={image} alt={title} className="product-image" />
+          {/* Fallback ảnh nếu link lỗi */}
+          <img 
+            src={image || "https://via.placeholder.com/300"} 
+            alt={title} 
+            className="product-image" 
+          />
         </div>
 
         <div className="product-content">
-          <span className="product-category">{category}</span>
+          <span className="product-category">{category || "Sản phẩm"}</span>
           <h3 className="product-title">{title}</h3>
-          <p className="product-description">{description}</p>
+          
+          {/* Cắt ngắn description nếu quá dài */}
+          <p className="product-description">
+            {description?.length > 50 ? description.substring(0, 50) + "..." : description}
+          </p>
 
           <div className="product-footer">
-            <span className="product-price">{price}</span>
+            {/* Hiển thị giá đã format */}
+            <span className="product-price">{formatMoney(price)}</span>
 
             <button 
               className="buy-button"
               onClick={(e) => {
                 e.stopPropagation();
-                console.log("Đã thêm vào giỏ, không mở modal");
+                // Logic thêm nhanh vào giỏ (nếu cần)
+                console.log("Quick add:", title);
               }}
             >
               <FaShoppingCart className="cart-icon" />

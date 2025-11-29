@@ -4,28 +4,23 @@ import ProductForm from "./ProductForm";
 import "./shop.css";
 import Cart from "./Cart";
 import { getAllProducts } from "../../api/requests/product";
+
 function Shop() {
   const [showCart, setShowCart] = useState(false);
   const [products, setProducts] = useState([]);
 
-  // Hàm format tiền tệ (Việt Nam Đồng)
-  const formatMoney = (amount) => {
-    // Kiểm tra nếu amount không phải số thì trả về 0đ hoặc giữ nguyên
-    if (!amount) return "0 ₫";
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
-  };
-
   useEffect(() => {
     const fetchData = async () => {
-      // Gọi hàm đã tách riêng
-      const data = await getAllProducts();
+      try {
+        const res = await getAllProducts();
 
-      // Kiểm tra dữ liệu trả về
-      if (data && data.success) {
-        setProducts(data.data);
+        if (res && Array.isArray(res.data)) {
+          setProducts(res.data);
+        } else {
+          setProducts([]);
+        }
+      } catch (error) {
+        console.error("Lỗi tải sản phẩm:", error);
       }
     };
 
@@ -34,10 +29,8 @@ function Shop() {
 
   return (
     <div className="shop-container">
-      {/* 1. Phần Cart Overlay */}
       {showCart && <Cart onClose={() => setShowCart(false)} />}
 
-      {/* 2. Phần Header */}
       <div className="shop-header">
         <div className="shop-title-section">
           <h1>Cửa hàng</h1>
@@ -50,18 +43,17 @@ function Shop() {
         </button>
       </div>
 
-      {/* 3. Phần Lưới sản phẩm */}
       <div className="product-list">
         {products.map((product) => (
           <ProductForm
             key={product._id}
-            _id={product._id} // THIẾT YẾU
+            _id={product._id}
             image={product.image}
             category={product.category}
             title={product.title}
             description={product.description}
-            price={formatMoney(product.price)} // vẫn ok
-            sizes={product.sizes || []} // THIẾT YẾU
+            price={product.price}
+            sizes={product.sizes || []}
           />
         ))}
       </div>

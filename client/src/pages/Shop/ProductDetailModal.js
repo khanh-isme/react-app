@@ -1,30 +1,32 @@
 import React, { useState } from 'react';
 import { FaShoppingCart, FaMinus, FaPlus } from "react-icons/fa";
-import { IoClose } from "react-icons/io5"; // Icon dấu X đẹp hơn
+import { IoClose } from "react-icons/io5"; 
 import './ProductDetailModal.css';
 
 const ProductDetailModal = ({ product, onClose }) => {
 
-  console.log(product);
   // State quản lý size đang chọn và số lượng
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
-  // Dữ liệu giả lập nếu không truyền product vào (để test)
+  // Dữ liệu fallback
   const defaultProduct = {
-    image: "https://ae01.alicdn.com/kf/S107502390a8848269784fb413d982181j/Gi-y-th-thao-nam-Gi-y-b-ng-r-ch-y-b-ngo-i.jpg",
-    category: "Giày dép",
-    title: "Giày sneaker thể thao",
-    price: 1299000,
-    description: "Thiết kế hiện đại, đế êm ái",
-    sizes: [38, 39, 40, 41, 42, 43] // Danh sách size có sẵn
+    image: "https://via.placeholder.com/400",
+    category: "Danh mục",
+    title: "Sản phẩm mẫu",
+    price: 0,
+    description: "Chưa có mô tả",
+    sizes: [] 
   };
 
   const currentProduct = product || defaultProduct;
 
-  // Hàm format tiền tệ VNĐ
+  // Hàm format tiền tệ chuẩn
   const formatMoney = (amount) => {
-    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " ₫";
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount);
   };
 
   // Xử lý tăng giảm số lượng
@@ -36,32 +38,32 @@ const ProductDetailModal = ({ product, onClose }) => {
     }
   };
 
-  // Tổng tiền = giá * số lượng
-  const totalPrice = currentProduct.price * quantity;
+  // Tổng tiền = giá (Number) * số lượng
+  const totalPrice = (currentProduct.price || 0) * quantity;
 
   const handleAddToCart = () => {
-    if (!selectedSize) {
+    if (!selectedSize && currentProduct.sizes?.length > 0) {
         alert("Vui lòng chọn size!");
         return;
     }
-    console.log("Thêm vào giỏ:", {
+
+    const cartItem = {
         ...currentProduct,
         selectedSize,
         quantity,
         totalPrice
-    });
-    // Sau khi thêm xong thì đóng modal
+    };
+
+    console.log("Thêm vào giỏ thành công:", cartItem);
+    // TODO: Gọi hàm context hoặc API để lưu vào giỏ hàng thật
+    
     onClose();
   };
 
   return (
-    // Lớp phủ mờ background
     <div className="pdm-overlay" onClick={onClose}>
-      
-      {/* Container chính của modal */}
       <div className="pdm-container" onClick={e => e.stopPropagation()}>
         
-        {/* Nút đóng X ở góc trên phải */}
         <button className="pdm-close-btn" onClick={onClose}>
             <IoClose size={24} color="#666" />
         </button>
@@ -74,7 +76,7 @@ const ProductDetailModal = ({ product, onClose }) => {
                 </div>
             </div>
 
-            {/* Cột phải: Thông tin và lựa chọn */}
+            {/* Cột phải: Thông tin */}
             <div className="pdm-right-col">
                 <span className="pdm-category">{currentProduct.category}</span>
                 <h2 className="pdm-title">{currentProduct.title}</h2>
@@ -86,21 +88,22 @@ const ProductDetailModal = ({ product, onClose }) => {
                 </div>
 
                 {/* Chọn Size */}
-                <div className="pdm-section">
-                    <h3>Chọn size</h3>
-                    <div className="pdm-size-grid">
-                        {currentProduct.sizes.map((size) => (
-                            <button 
-                                key={size} 
-                                // Thêm class 'active' nếu size này đang được chọn
-                                className={`pdm-size-btn ${selectedSize === size ? 'active' : ''}`}
-                                onClick={() => setSelectedSize(size)}
-                            >
-                                {size}
-                            </button>
-                        ))}
+                {currentProduct.sizes && currentProduct.sizes.length > 0 && (
+                    <div className="pdm-section">
+                        <h3>Chọn size</h3>
+                        <div className="pdm-size-grid">
+                            {currentProduct.sizes.map((size) => (
+                                <button 
+                                    key={size} 
+                                    className={`pdm-size-btn ${selectedSize === size ? 'active' : ''}`}
+                                    onClick={() => setSelectedSize(size)}
+                                >
+                                    {size}
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* Chọn Số lượng */}
                 <div className="pdm-section">
@@ -112,10 +115,10 @@ const ProductDetailModal = ({ product, onClose }) => {
                     </div>
                 </div>
 
-                {/* Nút thêm vào giỏ hàng (Full width) */}
+                {/* Nút thêm vào giỏ */}
                 <button className="pdm-add-to-cart-btn" onClick={handleAddToCart}>
                     <FaShoppingCart style={{ marginRight: '10px' }} />
-                    Thêm vào giỏ hàng - {formatMoney(totalPrice)}
+                    Thêm vào giỏ - {formatMoney(totalPrice)}
                 </button>
             </div>
         </div>
