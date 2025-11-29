@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 // --- IMPORT COMPONENTS ---
-import Shop from '../pages/Shop/Shop'; // Đảm bảo đúng tên file Shop.js
+import Shop from '../pages/Shop/shop'; // Đảm bảo đúng tên file Shop.js
 
 // --- IMPORT API ---
 import * as productRequest from '../api/requests/product';
