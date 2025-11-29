@@ -90,14 +90,15 @@ jobs:
 
     services:
       mongodb:
-        image: mongo:latest
+        image: mongo:6.0 # FIX 1: Ghim version cụ thể thay vì latest
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
-          --health-interval 5s
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'" 
+          --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        # FIX 2 (Ở trên): Dùng 'mongosh' thay vì 'mongo'
 
     steps:
       - name: Checkout Code
@@ -122,8 +123,9 @@ jobs:
           sleep 5
         env:
           PORT: 5000
+          # Lưu ý: GitHub Actions map service port ra localhost
           MONGODB_URI: mongodb://localhost:27017/test_db
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'fallback-secret-for-ci' }}
 
       - name: Wait for Backend API
         run: npx wait-on http://localhost:5000 --timeout 60000
