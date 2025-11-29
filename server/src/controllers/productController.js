@@ -1,132 +1,68 @@
-import Product from   '../models/Product.model.js';
+import * as productService from "../services/productService.js";
 
-// 1. CREATE: Thêm sản phẩm mới
+// CREATE
 export const createProduct = async (req, res) => {
   try {
-    // Lấy dữ liệu từ body request
-    const newProduct = new Product(req.body);
-
-    // Lưu vào database
-    const savedProduct = await newProduct.save();
-
-    // Trả về kết quả thành công (201 Created)
+    const savedProduct = await productService.createProduct(req.body);
     res.status(201).json({
       success: true,
       message: "Thêm sản phẩm thành công",
-      data: savedProduct
+      data: savedProduct,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Lỗi khi thêm sản phẩm",
-      error: error.message
-    });
+    res.status(500).json({ success: false, message: "Lỗi khi thêm sản phẩm", error: error.message });
   }
 };
 
-// 2. READ ALL: Lấy danh sách tất cả sản phẩm
+// GET ALL
 export const getAllProducts = async (req, res) => {
   try {
-    
-    const products = await Product.find();
-
+    const products = await productService.getAllProducts();
     res.status(200).json({
       success: true,
       count: products.length,
-      data: products
+      data: products,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Lỗi khi lấy danh sách sản phẩm",
-      error: error.message
-    });
+    res.status(500).json({ success: false, message: "Lỗi khi lấy danh sách sản phẩm", error: error.message });
   }
 };
 
-// 3. READ ONE: Lấy chi tiết 1 sản phẩm theo ID
+// GET BY ID
 export const getProductById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const product = await Product.findById(id);
-
-    // Nếu không tìm thấy
+    const product = await productService.getProductById(req.params.id);
     if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Không tìm thấy sản phẩm với ID này"
-      });
+      return res.status(404).json({ success: false, message: "Không tìm thấy sản phẩm" });
     }
-
-    res.status(200).json({
-      success: true,
-      data: product
-    });
+    res.status(200).json({ success: true, data: product });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Lỗi server hoặc ID không hợp lệ",
-      error: error.message
-    });
+    res.status(500).json({ success: false, message: "Lỗi server", error: error.message });
   }
 };
 
-// 4. UPDATE: Cập nhật sản phẩm theo ID
+// UPDATE
 export const updateProduct = async (req, res) => {
   try {
-    const { id } = req.params;
-    
-    // findByIdAndUpdate(id, data, options)
-    // new: true -> trả về data sau khi update (mặc định là trả về data cũ)
-    // runValidators: true -> chạy lại validate của Schema (ví dụ check min: 0)
-    const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true 
-    });
-
-    if (!updatedProduct) {
-      return res.status(404).json({
-        success: false,
-        message: "Không tìm thấy sản phẩm để cập nhật"
-      });
+    const updated = await productService.updateProduct(req.params.id, req.body);
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "Không tìm thấy sản phẩm" });
     }
-
-    res.status(200).json({
-      success: true,
-      message: "Cập nhật thành công",
-      data: updatedProduct
-    });
+    res.status(200).json({ success: true, message: "Cập nhật thành công", data: updated });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Lỗi khi cập nhật",
-      error: error.message
-    });
+    res.status(500).json({ success: false, message: "Lỗi khi cập nhật", error: error.message });
   }
 };
 
-// 5. DELETE: Xóa sản phẩm theo ID
+// DELETE
 export const deleteProduct = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedProduct = await Product.findByIdAndDelete(id);
-
-    if (!deletedProduct) {
-      return res.status(404).json({
-        success: false,
-        message: "Không tìm thấy sản phẩm để xóa"
-      });
+    const deleted = await productService.deleteProduct(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "Không tìm thấy sản phẩm" });
     }
-
-    res.status(200).json({
-      success: true,
-      message: "Đã xóa sản phẩm thành công"
-    });
+    res.status(200).json({ success: true, message: "Đã xóa sản phẩm thành công" });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Lỗi khi xóa",
-      error: error.message
-    });
+    res.status(500).json({ success: false, message: "Lỗi khi xóa", error: error.message });
   }
 };

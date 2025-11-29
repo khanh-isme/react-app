@@ -56,7 +56,7 @@ function Login() {
             required
           />
 
-          <button type="submit">Đăng nhập</button>
+          <button type="submit" data-testid="login-btn">Đăng nhập</button>
 
           <a href="/forgot" className={styles.forgotLink}>
             Quên mật khẩu?

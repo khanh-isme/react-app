@@ -49,6 +49,13 @@ function Header() {
         </li>
 
 
+        <li>
+          <Link to="/productmanagement" className={styles.item}>
+            <FaStore className={styles.icon} />
+            <span>Product Management</span>
+          </Link>
+        </li>
+
 
         <li>
           <div className={styles.item} style={{ pointerEvents: clickSearchPanel.current }}

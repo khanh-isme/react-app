@@ -11,7 +11,7 @@ function Home() {
   
   useEffect(() => {
     Hello()
-      .then(msg => setMessage(msg))
+      .then(msg => setMessage(msg)) 
       .catch(err => setMessage("Lỗi khi gọi API"));
   }, []);
 

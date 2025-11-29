@@ -1,0 +1,221 @@
+/* Container chung */
+.pm-container {
+  padding: 32px;
+ 
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* --- Header --- */
+.pm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.pm-header-left h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+}
+
+.pm-header-left p {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Nút Thêm sản phẩm */
+.pm-add-btn {
+  background-color: #2563eb; /* Màu xanh chủ đạo */
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.pm-add-btn:hover {
+  background-color: #1d4ed8;
+}
+
+/* --- Search Bar --- */
+.pm-search-container {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.pm-search-icon {
+  color: #9ca3af;
+  margin-right: 12px;
+}
+
+.pm-search-input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  width: 100%;
+  color: #374151;
+}
+
+.pm-search-input::placeholder {
+  color: #9ca3af;
+}
+
+/* --- Table --- */
+.pm-table-wrapper {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* Bo góc table */
+}
+
+.pm-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pm-table th {
+  text-align: left;
+  padding: 16px 24px;
+  background-color: #ffffff;
+  color: #111827;
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pm-table td {
+  padding: 16px 24px;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+
+.pm-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Cột hình ảnh */
+.pm-product-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #f3f4f6;
+}
+
+/* Cột tên sản phẩm */
+.pm-product-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.pm-product-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.pm-product-desc {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Cột danh mục (Badge) */
+.pm-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 9999px; /* Pill shape */
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Màu badge tuỳ loại (giống ảnh) */
+.pm-badge-blue {
+  background-color: #dbeafe; /* Xanh nhạt */
+  color: #2563eb;
+}
+.pm-badge-indigo {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+}
+.pm-badge-purple {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+}
+
+/* Giá */
+.pm-price-text {
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Sizes */
+.pm-size-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pm-size-tag {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* Actions (Nút sửa/xóa) */
+.pm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.pm-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pm-action-btn.edit {
+  color: #2563eb; /* Màu xanh bút */
+  background-color: #eff6ff;
+  border: 1px solid #dbeafe;
+}
+
+.pm-action-btn.edit:hover {
+  background-color: #dbeafe;
+}
+
+.pm-action-btn.delete {
+  color: #dc2626; /* Màu đỏ thùng rác */
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+}
+
+.pm-action-btn.delete:hover {
+  background-color: #fee2e2;
+}

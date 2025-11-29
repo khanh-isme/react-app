@@ -1,9 +1,8 @@
 # =====================
-# Node dependencies
+# Node dependencies (Dùng **/ để chặn ở mọi thư mục con)
 # =====================
 node_modules/
-client/node_modules/
-server/node_modules/
+**/node_modules/
 
 # =====================
 # Build / Output
@@ -12,16 +11,34 @@ build/
 dist/
 .out/
 .next/
-coverage/
 
 # =====================
-# Environment variables
+# Environment variables (RẤT QUAN TRỌNG)
 # =====================
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+**/.env
+
+# =====================
+# Testing & Reports (QUAN TRỌNG CHO BÀI TẬP CỦA BẠN)
+# =====================
+# Jest Coverage report
+coverage/
+**/coverage/
+
+# Cypress Artifacts (Video & Ảnh chụp màn hình khi test lỗi)
+# Những file này rất nặng, tuyệt đối không đẩy lên Git
+cypress/videos/
+cypress/screenshots/
+client/cypress/videos/
+client/cypress/screenshots/
+
+# Jest JUnit Reports (Nếu có dùng report XML)
+junit.xml
+test-report.xml
 
 # =====================
 # Logs
@@ -29,15 +46,37 @@ coverage/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+logs/
+*.log
 
 # =====================
-# Misc
+# Misc / System
 # =====================
 .DS_Store
 Thumbs.db
 
 # =====================
-# Optional: VSCode, system files
+# IDEs
 # =====================
 .vscode/
 .idea/
+```
+
+### Giải thích các mục bổ sung:
+
+1.  **`**/node_modules/`**: Dòng này đảm bảo dù `node_modules` nằm ở root, trong `client` hay `server` hay bất kỳ thư mục con sâu nào cũng sẽ bị chặn. Gọn hơn việc liệt kê từng cái.
+2.  **`cypress/videos/` & `cypress/screenshots/`**: Khi chạy Cypress (đặc biệt trong CI/CD), nó sẽ tự quay video và chụp màn hình lỗi. Những file này là file nhị phân và rất nặng, nếu lỡ đẩy lên GitHub sẽ làm phình to repo rất nhanh -> **Bắt buộc phải chặn**.
+3.  **`coverage/`**: Kết quả báo cáo độ bao phủ dòng code (Coverage report) của Jest sinh ra rất nhiều file HTML nhỏ, không cần thiết phải lưu trữ trên Git.
+
+---
+
+### Bước tiếp theo: Đẩy code lên GitHub
+
+Bây giờ bạn đã có `.gitignore` chuẩn, bạn có thể thực hiện các lệnh Git như mình hướng dẫn lúc nãy:
+
+1.  Mở terminal tại thư mục gốc `MYAPP`.
+2.  Chạy lệnh:
+    ```bash
+    git init
+    git add .
+    git commit -m "Initial commit"
