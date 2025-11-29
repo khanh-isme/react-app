@@ -139,11 +139,14 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./client
-          start: CI=true npm start
+          # SỬA Ở ĐÂY: Chỉ để lệnh chạy server, không kèm biến môi trường phía trước
+          start: npm start
           browser: chrome
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
         env:
+          # CHUYỂN BIẾN MÔI TRƯỜNG XUỐNG ĐÂY
+          CI: true 
           CYPRESS_baseUrl: http://localhost:3000
           REACT_APP_API_URL: http://localhost:5000
 
