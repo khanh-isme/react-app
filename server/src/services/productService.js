@@ -6,16 +6,27 @@ export const createProduct = async (data) => {
   return await newProduct.save();
 };
 
-// GET ALL (KHÔNG PHÂN TRANG)
 // GET ALL với pagination
 export const getAllProducts = async (page = 1, limit = 10) => {
   const skip = (page - 1) * limit;
-  return await Product.find()
+  
+  // 1. Lấy danh sách sản phẩm
+  const products = await Product.find()
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
-};
 
+  // 2. Đếm tổng số lượng (để tính totalPages)
+  const total = await Product.countDocuments();
+
+  // 3. Trả về object kết quả đầy đủ
+  return {
+    products,
+    total,
+    totalPages: Math.ceil(total / limit),
+    currentPage: page
+  };
+};
 
 // GET BY ID
 export const getProductById = async (id) => {

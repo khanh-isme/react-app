@@ -4,8 +4,8 @@ import {
   updateProduct, 
   deleteProduct, 
   getAllProducts 
-} from '../services/productService'; // Đảm bảo đường dẫn đúng tới file service
-import Product from '../models/Product.model.js'; // Đảm bảo đường dẫn đúng tới file model
+} from '../services/productService'; 
+import Product from '../models/Product.model.js'; 
 
 // Mock Mongoose Model
 jest.mock('../models/Product.model.js');
@@ -22,8 +22,6 @@ describe('ProductService', () => {
       const mockData = { title: 'New Product', price: 100 };
       const savedProduct = { _id: '123', ...mockData };
 
-      // Mock hành vi của new Product().save()
-      // Khi mock constructor, ta dùng mockImplementation
       Product.mockImplementation(() => ({
         save: jest.fn().mockResolvedValue(savedProduct)
       }));
@@ -31,7 +29,6 @@ describe('ProductService', () => {
       const result = await createProduct(mockData);
 
       expect(result).toEqual(savedProduct);
-      // Kiểm tra xem Product constructor có được gọi không
       expect(Product).toHaveBeenCalledWith(mockData);
     });
   });
@@ -63,10 +60,11 @@ describe('ProductService', () => {
       const result = await updateProduct('123', { title: 'Updated' });
       
       expect(result).toEqual(mockProduct);
+      // FIXED: Thêm runValidators: true để khớp với code implementation
       expect(Product.findByIdAndUpdate).toHaveBeenCalledWith(
         '123', 
         { title: 'Updated' }, 
-        { new: true }
+        { new: true, runValidators: true }
       );
     });
   });
@@ -84,39 +82,34 @@ describe('ProductService', () => {
     });
   });
 
-  // --- 5. Test getAllProducts with Pagination (Khó nhất) ---
+  // --- 5. Test getAllProducts with Pagination ---
   describe('getAllProducts', () => {
     test('should return paginated result', async () => {
       const mockProducts = [{ title: 'P1' }, { title: 'P2' }];
       const totalDocs = 20;
 
-      // Mock Mongoose Chain: find -> sort -> skip -> limit
-      // Tạo một chuỗi các hàm mock trả về chính nó (this) hoặc object tiếp theo
+      // Mock chain: find -> sort -> skip -> limit
       const mockChain = {
         sort: jest.fn().mockReturnThis(),
         skip: jest.fn().mockReturnThis(),
-        limit: jest.fn().mockResolvedValue(mockProducts) // Hàm cuối cùng trả về data
+        limit: jest.fn().mockResolvedValue(mockProducts)
       };
 
       Product.find.mockReturnValue(mockChain);
       Product.countDocuments.mockResolvedValue(totalDocs);
 
-      // Gọi hàm: Page 2, Limit 10
       const result = await getAllProducts(2, 10);
 
-      // Assertion logic
       expect(Product.find).toHaveBeenCalled();
       expect(mockChain.sort).toHaveBeenCalledWith({ createdAt: -1 });
-      
-      // Page 2 -> Skip = (2-1)*10 = 10
       expect(mockChain.skip).toHaveBeenCalledWith(10);
       expect(mockChain.limit).toHaveBeenCalledWith(10);
 
-      // Kiểm tra kết quả trả về đúng cấu trúc pagination không
+      // Kiểm tra kết quả trả về đúng cấu trúc pagination
       expect(result).toEqual({
         products: mockProducts,
         total: 20,
-        totalPages: 2, // 20 / 10 = 2 trang
+        totalPages: 2,
         currentPage: 2
       });
     });
@@ -130,11 +123,9 @@ describe('ProductService', () => {
       Product.find.mockReturnValue(mockChain);
       Product.countDocuments.mockResolvedValue(0);
 
-      await getAllProducts(); // Không truyền tham số
+      await getAllProducts(); 
 
-      // Mặc định Page 1 -> Skip 0
       expect(mockChain.skip).toHaveBeenCalledWith(0);
-      // Mặc định Limit 10
       expect(mockChain.limit).toHaveBeenCalledWith(10);
     });
   });

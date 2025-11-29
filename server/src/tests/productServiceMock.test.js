@@ -15,7 +15,6 @@ describe('ProductService (Direct Model Access)', () => {
     const mockData = { title: 'New Product', price: 100 };
     const savedProduct = { _id: '1', ...mockData };
 
-    // Mock hàm constructor new Product() và hàm .save()
     Product.mockImplementation(() => ({
       save: jest.fn().mockResolvedValue(savedProduct)
     }));
@@ -26,15 +25,30 @@ describe('ProductService (Direct Model Access)', () => {
     expect(Product).toHaveBeenCalledWith(mockData);
   });
 
-  // Test Read All
-  test('getAllProducts: Should call Product.find()', async () => {
+  // Test Read All (FIXED: Mock Chaining & Pagination Return)
+  test('getAllProducts: Should call Product.find() and return pagination object', async () => {
     const mockList = [{ title: 'A' }, { title: 'B' }];
-    // Mock hàm tĩnh (static) Product.find
-    Product.find.mockResolvedValue(mockList);
+    const totalDocs = 2;
+
+    // FIXED: Mock chuỗi hàm .sort().skip().limit()
+    const mockChain = {
+      sort: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockResolvedValue(mockList)
+    };
+
+    Product.find.mockReturnValue(mockChain);
+    Product.countDocuments.mockResolvedValue(totalDocs);
 
     const result = await productService.getAllProducts();
 
-    expect(result).toEqual(mockList);
+    // FIXED: Kết quả bây giờ là Object chứa products
+    expect(result).toEqual({
+        products: mockList,
+        total: 2,
+        totalPages: 1, // 2 items / limit 10 = 1 page
+        currentPage: 1
+    });
     expect(Product.find).toHaveBeenCalled();
   });
 
