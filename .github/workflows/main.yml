@@ -1,6 +1,5 @@
 name: CI/CD Pipeline (Login & Product Tests)
 
-# Workflow kích hoạt khi có code push lên nhánh main hoặc master
 on:
   push:
     branches: [ "main", "master" ]
@@ -9,7 +8,7 @@ on:
 
 jobs:
   # ------------------------------------------------------------------
-  # JOB 1: BACKEND UNIT TESTS (Test Service, Controller...)
+  # JOB 1: BACKEND UNIT TESTS
   # ------------------------------------------------------------------
   backend-test:
     name: Backend Unit Tests
@@ -32,12 +31,15 @@ jobs:
       - name: Install Backend Dependencies
         run: npm install
 
-      # Chạy Jest cho backend
+      # SỬA: Thêm biến môi trường giả vào đây để Jest không bị lỗi thiếu config
       - name: Run Backend Tests
         run: npm test
+        env:
+          JWT_SECRET: "test-secret-key-for-ci" 
+          PORT: 5000
 
   # ------------------------------------------------------------------
-  # JOB 2: FRONTEND UNIT TESTS (Test Component, Mocking...)
+  # JOB 2: FRONTEND UNIT TESTS (Giữ nguyên vì đã chạy OK)
   # ------------------------------------------------------------------
   frontend-test:
     name: Frontend Unit Tests
@@ -60,19 +62,17 @@ jobs:
       - name: Install Frontend Dependencies
         run: npm install
 
-      # Chạy test frontend. Biến CI=true giúp test chạy 1 lần rồi dừng (không watch)
       - name: Run Frontend Component Tests
         run: npm test
         env:
           CI: true
 
   # ------------------------------------------------------------------
-  # JOB 3: E2E AUTOMATION TESTING (Cypress - Login Flow)
+  # JOB 3: E2E AUTOMATION TESTING
   # ------------------------------------------------------------------
   e2e-test:
     name: E2E Login & Product Tests
     runs-on: ubuntu-latest
-    # Tạo MongoDB ảo để Backend kết nối khi test
     services:
       mongodb:
         image: mongo:latest
@@ -83,7 +83,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # --- BƯỚC 3.1: CHUẨN BỊ VÀ CHẠY SERVER (BACKEND) ---
+      # --- BACKEND ---
       - name: Setup Backend Node.js
         uses: actions/setup-node@v4
         with:
@@ -95,39 +95,36 @@ jobs:
         working-directory: ./server
         run: npm install
 
+      # SỬA: Thêm JWT_SECRET lấy từ GitHub Secrets để Server khởi động được
       - name: Start Backend Server
         working-directory: ./server
-        # Chạy server ở chế độ nền (&) để terminal không bị treo
         run: |
           npm start &
           echo "Backend started in background..."
         env:
           PORT: 5000
-          MONGODB_URI: mongodb://localhost:27017/test_db 
+          MONGODB_URI: mongodb://localhost:27017/test_db
+          JWT_SECRET: ${{ secrets.JWT_SECRET }} 
 
-      # Chờ 60s để chắc chắn Server đã khởi động xong tại port 5000
-      - name: Wait for Backend to be ready
+      - name: Wait for Backend
         run: npx wait-on http://localhost:5000 --timeout 60000
 
-      # --- BƯỚC 3.2: CHUẨN BỊ VÀ CHẠY CYPRESS (FRONTEND) ---
+      # --- FRONTEND & CYPRESS ---
       - name: Cypress Run
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./client
-          # Action này sẽ tự động chạy lệnh 'npm start' của client
           start: npm start
-          # Nó sẽ đợi cho đến khi url này truy cập được mới bắt đầu test
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
           browser: chrome
         env:
-          # Nếu Client cần biết API ở đâu
           REACT_APP_API_URL: http://localhost:5000
+          # Nếu Frontend cũng cần biến môi trường thì thêm vào đây
 
-      # --- BƯỚC 3.3: LƯU BÁO CÁO (NẾU LỖI) ---
-      - name: Upload Cypress Screenshots/Videos
+      - name: Upload Cypress Artifacts
         uses: actions/upload-artifact@v4
-        if: failure() # Chỉ chạy bước này nếu test bị fail
+        if: failure()
         with:
           name: cypress-evidence
           path: |
