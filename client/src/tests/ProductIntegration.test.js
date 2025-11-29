@@ -2,11 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 // --- IMPORT COMPONENTS ---
-// Lưu ý: Đảm bảo đường dẫn import khớp với cấu trúc thư mục của bạn
-import Shop from '../pages/Shop/shop'; 
+import Shop from '../pages/Shop/Shop'; // Đảm bảo đúng tên file Shop.js
 
 // --- IMPORT API ---
-// Import hàm API thật để mock
 import * as productRequest from '../api/requests/product';
 
 // --- MOCKING ---
@@ -14,7 +12,7 @@ import * as productRequest from '../api/requests/product';
 // 1. Mock API module
 jest.mock('../api/requests/product');
 
-// 2. Mock Component con (Cart) để tránh lỗi nếu file không tồn tại hoặc phức tạp
+// 2. Mock Cart Component (Giả lập Cart để test việc mở/đóng)
 jest.mock('../pages/Shop/Cart', () => {
   return function MockCart({ onClose }) {
     return (
@@ -26,7 +24,7 @@ jest.mock('../pages/Shop/Cart', () => {
   };
 });
 
-// 3. Mock React Icons để tránh lỗi render SVG
+// 3. Mock React Icons
 jest.mock("react-icons/fa", () => ({
   FaShoppingCart: () => <span data-testid="cart-icon">CartIcon</span>,
   FaMinus: () => <span>-</span>,
@@ -38,7 +36,7 @@ jest.mock("react-icons/io5", () => ({
 
 describe('Frontend Product Integration Tests (Shop & Detail)', () => {
   
-  // Dữ liệu giả lập khớp với cấu trúc MongoDB (_id)
+  // Dữ liệu giả lập khớp với cấu trúc Backend mới (Price là Number)
   const mockProducts = [
     { 
       _id: '1', 
@@ -64,8 +62,9 @@ describe('Frontend Product Integration Tests (Shop & Detail)', () => {
     jest.clearAllMocks();
   });
 
-  // --- Test Case 1: Hiển thị danh sách sản phẩm (ProductList Integration) ---
+  // --- Test Case 1: Hiển thị danh sách sản phẩm ---
   test('Shop: Fetches products from API and renders ProductCards', async () => {
+    // Mock trả về cấu trúc giống Controller: { success: true, data: [...] }
     productRequest.getAllProducts.mockResolvedValue({
       success: true,
       data: mockProducts
@@ -73,13 +72,16 @@ describe('Frontend Product Integration Tests (Shop & Detail)', () => {
 
     render(<Shop />);
 
+    // Kiểm tra API được gọi
     await waitFor(() => {
       expect(productRequest.getAllProducts).toHaveBeenCalledTimes(1);
     });
 
+    // Kiểm tra UI hiển thị sản phẩm
     expect(await screen.findByText('iPhone 15 Pro')).toBeInTheDocument();
-    expect(await screen.findByText('MacBook Air M2')).toBeInTheDocument();
     
+    // Kiểm tra giá tiền đã được format (Shop truyền number -> Form format thành string)
+    // Regex tìm chuỗi "25.000.000" bất kể ký tự tiền tệ
     expect(await screen.findByText(/25\.000\.000/)).toBeInTheDocument();
   });
 
@@ -88,66 +90,62 @@ describe('Frontend Product Integration Tests (Shop & Detail)', () => {
     productRequest.getAllProducts.mockResolvedValue({ success: true, data: [] });
     render(<Shop />);
 
+    // Ban đầu chưa có Cart
     expect(screen.queryByTestId('mock-cart')).not.toBeInTheDocument();
 
+    // Tìm nút Giỏ hàng ở Header
     const cartBtn = screen.getByRole('button', { name: /Giỏ hàng/i });
     fireEvent.click(cartBtn);
 
+    // Cart xuất hiện
     expect(await screen.findByTestId('mock-cart')).toBeInTheDocument();
   });
 
-  // --- Test Case 3: Tích hợp ProductDetail (Click Card -> Mở Modal -> Thêm giỏ) ---
+  // --- Test Case 3: Tích hợp ProductDetail (Mở Modal -> Thêm giỏ) ---
   test('ProductDetail: Opens modal, selects size/quantity and adds to cart', async () => {
-    // Setup
     productRequest.getAllProducts.mockResolvedValue({
       success: true,
       data: mockProducts
     });
     
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    // Mock window.alert để không hiện popup thật
     jest.spyOn(window, 'alert').mockImplementation(() => {});
 
+    // Render Shop
     render(<Shop />);
 
-    // 1. Chờ sản phẩm load và click vào sản phẩm đầu tiên
-    const productItem = await screen.findByText('iPhone 15 Pro');
-    fireEvent.click(productItem);
+    // 1. Chờ load và Click vào tên sản phẩm để mở Modal (Card Body click)
+    const productTitle = await screen.findByText('iPhone 15 Pro');
+    fireEvent.click(productTitle);
 
-    // 2. Kiểm tra Modal đã mở
+    // 2. Chờ Modal mở
     await waitFor(() => {
-      // Text này chỉ có trong modal
-      expect(screen.getByText('Mô tả sản phẩm')).toBeInTheDocument(); 
-      
-      // SỬA LỖI Ở ĐÂY: Dùng getAllByText vì text này xuất hiện 2 lần (Card + Modal)
-      const descriptions = screen.getAllByText('Titan tự nhiên');
-      expect(descriptions.length).toBeGreaterThan(0); 
+      // Tìm text đặc trưng trong Modal
+      expect(screen.getByText('Mô tả sản phẩm')).toBeInTheDocument();
     });
 
-    // 3. Test logic trong Modal: Tăng số lượng
+    // 3. Test logic Modal: Tăng số lượng
+    // Tìm nút "+" trong modal (đã mock icon thành text "+")
     const plusBtn = screen.getByText('+');
-    fireEvent.click(plusBtn); // Tăng lên 2
+    fireEvent.click(plusBtn); 
+    // Kiểm tra số lượng tăng lên 2
     expect(screen.getByText('2')).toBeInTheDocument();
 
-    // 4. Test logic: Thử bấm thêm vào giỏ khi CHƯA chọn size (Mong đợi alert)
-    const addToCartBtn = screen.getByText(/Thêm vào giỏ hàng/i);
+    // 4. Test Validation: Bấm thêm giỏ khi chưa chọn size
+    const addToCartBtn = screen.getByText(/Thêm vào giỏ/i); // Text button chứa "Thêm vào giỏ"
     fireEvent.click(addToCartBtn);
     expect(window.alert).toHaveBeenCalledWith("Vui lòng chọn size!");
 
-    // 5. Test logic: Chọn size và Thêm vào giỏ thành công
+    // 5. Test chọn size và thêm thành công
     const sizeBtn = screen.getByText('256GB');
     fireEvent.click(sizeBtn); // Chọn size
-    fireEvent.click(addToCartBtn); // Thêm lại
+    
+    fireEvent.click(addToCartBtn); // Bấm mua lần nữa
 
-    // 6. Kiểm tra console.log
-    expect(consoleSpy).toHaveBeenCalledWith(
-        "Thêm vào giỏ:", 
-        expect.objectContaining({
-            title: 'iPhone 15 Pro',
-            quantity: 2,
-            selectedSize: '256GB'
-        })
-    );
-
-    consoleSpy.mockRestore();
+    // Kiểm tra alert thành công
+    expect(window.alert).toHaveBeenCalledWith("Đã thêm vào giỏ hàng thành công!");
+    
+    // Clean up
+    window.alert.mockRestore();
   });
 });

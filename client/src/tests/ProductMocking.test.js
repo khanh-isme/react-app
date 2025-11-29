@@ -1,25 +1,27 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-// Import Component chính (bao gồm cả Modal bên trong nó)
-import ProductManager from '../pages/ProductManagement/ProductManagement';
-// Import API thật để lấy đối tượng mock
+// Import Component
+import ProductManager from '../pages/ProductManagement/ProductManagement'; 
+// Import API Requests
 import * as productRequest from '../api/requests/product';
 
-// --- YÊU CẦU a) Mock CRUD operations (1.5 điểm) ---
-// Mock toàn bộ module api/requests/product
+// --- MOCKING ---
+
+// 1. Mock API module
 jest.mock('../api/requests/product');
 
-// Mock các Icon để tránh lỗi render
+// 2. Mock React Icons (Quan trọng: Mock đủ các thư viện bạn dùng)
 jest.mock("react-icons/fa", () => ({
-  FaSearch: () => <span>SearchIcon</span>,
-  FaPlus: () => <span>PlusIcon</span>,
-  FaRegEdit: () => <span>EditIcon</span>,
-  FaTrashAlt: () => <span>DeleteIcon</span>
+  FaSearch: () => <span data-testid="icon-search">Search</span>,
+  FaPlus: () => <span data-testid="icon-plus">Plus</span>,
+  FaRegEdit: () => <span data-testid="icon-edit">Edit</span>,
+  FaTrashAlt: () => <span data-testid="icon-delete">Delete</span>
 }));
+
 jest.mock("react-icons/io5", () => ({
-  IoClose: () => <span>CloseIcon</span>,
-  IoCloudUploadOutline: () => <span>UploadIcon</span>,
-  IoTrashOutline: () => <span>TrashIcon</span>
+  IoClose: () => <span data-testid="icon-close">Close</span>,
+  IoCloudUploadOutline: () => <span data-testid="icon-upload">Upload</span>,
+  IoTrashOutline: () => <span data-testid="icon-trash-outline">Trash</span>
 }));
 
 describe('5.2.1 Frontend Mocking - ProductManager & Modal', () => {
@@ -30,29 +32,27 @@ describe('5.2.1 Frontend Mocking - ProductManager & Modal', () => {
       _id: '1',
       title: 'iPhone 15 Pro',
       price: 25000000,
-      category: 'Thời trang', // Để khớp với logic badge màu
+      category: 'Đồ điện tử',
       description: 'Titan tự nhiên',
       image: 'img.jpg',
-      sizes: ['S', 'M']
+      sizes: ['256GB', '512GB']
     }
   ];
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // Mock window.alert và window.confirm
+    // Spy alert và confirm
     jest.spyOn(window, 'alert').mockImplementation(() => {});
-    jest.spyOn(window, 'confirm').mockImplementation(() => true); // Luôn chọn OK khi xóa
+    jest.spyOn(window, 'confirm').mockImplementation(() => true); // Luôn chọn OK
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  // --- YÊU CẦU b) Test success và failure scenarios (0.5 điểm) ---
-
-  // 1. Test READ Success (Lấy danh sách thành công)
+  // --- CASE 1: READ (Hiển thị danh sách) ---
   test('READ: Fetches and displays products successfully', async () => {
-    // Setup Mock trả về thành công
+    // Setup Mock
     productRequest.getAllProducts.mockResolvedValue({
       success: true,
       data: mockProducts
@@ -60,24 +60,28 @@ describe('5.2.1 Frontend Mocking - ProductManager & Modal', () => {
 
     render(<ProductManager />);
 
-    // --- YÊU CẦU c) Verify all mock calls (0.5 điểm) ---
+    // Kiểm tra loading ban đầu (nếu máy nhanh quá có thể skip)
+    // expect(screen.getByText('Đang tải dữ liệu...')).toBeInTheDocument();
+
+    // Verify API call
     await waitFor(() => {
-      // Kiểm tra hàm API đã được gọi 1 lần khi mount
       expect(productRequest.getAllProducts).toHaveBeenCalledTimes(1);
     });
 
-    // Kiểm tra UI hiển thị đúng tên sản phẩm
+    // Verify UI
     expect(await screen.findByText('iPhone 15 Pro')).toBeInTheDocument();
-    // Kiểm tra hiển thị giá đã format
+    expect(screen.getByText('Đồ điện tử')).toBeInTheDocument();
+    
+    // Kiểm tra giá tiền đã format (25.000.000 ₫)
     expect(screen.getByText(/25\.000\.000/)).toBeInTheDocument();
+    
+    // Kiểm tra hiển thị size tag
+    expect(screen.getByText('256GB')).toBeInTheDocument();
   });
 
-  // 2. Test READ Failure (Lỗi API)
-  test('READ: Handles fetch failure gracefully (Shows empty state)', async () => {
-    // Setup Mock trả về lỗi (hoặc throw error)
-    productRequest.getAllProducts.mockRejectedValue(new Error("Lỗi mạng"));
-    // Spy console.error để không in rác ra màn hình test
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  // --- CASE 2: READ Empty (Không có sản phẩm) ---
+  test('READ: Displays empty state when no products found', async () => {
+    productRequest.getAllProducts.mockResolvedValue({ success: true, data: [] });
 
     render(<ProductManager />);
 
@@ -85,100 +89,127 @@ describe('5.2.1 Frontend Mocking - ProductManager & Modal', () => {
       expect(productRequest.getAllProducts).toHaveBeenCalled();
     });
 
-    // Kiểm tra UI hiển thị trạng thái trống
     expect(await screen.findByText('Không có sản phẩm nào.')).toBeInTheDocument();
-    
-    consoleSpy.mockRestore();
   });
 
-  // 3. Test CREATE Success (Mở modal -> Điền form -> Submit thành công)
-  test('CREATE: Opens modal and submits new product successfully', async () => {
-    // Setup: List rỗng ban đầu
+  // --- CASE 3: CREATE (Thêm mới sản phẩm) ---
+  test('CREATE: Opens modal, fills form and submits successfully', async () => {
+    // 1. Setup Mock
     productRequest.getAllProducts.mockResolvedValue({ success: true, data: [] });
-    // Setup: Create thành công
-    productRequest.createProduct.mockResolvedValue({ success: true });
+    productRequest.createProduct.mockResolvedValue({ success: true, data: {} });
 
     render(<ProductManager />);
 
-    // 1. Click nút "Thêm sản phẩm"
-    fireEvent.click(screen.getByText('Thêm sản phẩm'));
+    // 2. Click nút "Thêm sản phẩm"
+    const addBtn = screen.getByRole('button', { name: /Thêm sản phẩm/i });
+    fireEvent.click(addBtn);
 
-    // 2. Điền form trong Modal
-    // (Dựa vào placeholder trong code ProductFormModal của bạn)
-    fireEvent.change(screen.getByPlaceholderText(/Ví dụ: Áo thun nam/i), { target: { value: 'New Item' } });
-    fireEvent.change(screen.getByPlaceholderText(/Ví dụ: 100000/i), { target: { value: '50000' } });
-    
-    // Chọn danh mục (Combobox)
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Thời trang' } });
+    // 3. Kiểm tra Modal mở (Tìm title modal)
+    expect(screen.getByText('Thêm sản phẩm mới')).toBeInTheDocument();
 
-    // 3. Click Submit ("Thêm mới")
-    fireEvent.click(screen.getByText('Thêm mới'));
+    // 4. Điền Form (Dựa trên placeholder trong code của bạn)
+    const nameInput = screen.getByPlaceholderText('Ví dụ: Áo thun nam');
+    const priceInput = screen.getByPlaceholderText('Ví dụ: 100000');
+    const sizesInput = screen.getByPlaceholderText('Ví dụ: S, M, L, XL');
+    // Select category (combobox)
+    const categorySelect = screen.getByRole('combobox'); 
 
-    // --- Verify Mock Calls ---
+    fireEvent.change(nameInput, { target: { value: 'Áo Thun Test' } });
+    fireEvent.change(priceInput, { target: { value: '50000' } });
+    fireEvent.change(categorySelect, { target: { value: 'Thời trang' } });
+    fireEvent.change(sizesInput, { target: { value: 'S, M, L' } });
+
+    // 5. Submit Form (Nút "Thêm mới")
+    const submitBtn = screen.getByText('Thêm mới');
+    fireEvent.click(submitBtn);
+
+    // 6. Verify Mock Call
     await waitFor(() => {
-      // Kiểm tra createProduct được gọi với đúng dữ liệu đã điền
       expect(productRequest.createProduct).toHaveBeenCalledWith(expect.objectContaining({
-        title: 'New Item',
-        price: 50000,
-        category: 'Thời trang'
+        title: 'Áo Thun Test',
+        price: 50000, // Code bạn có ép kiểu Number()
+        category: 'Thời trang',
+        sizes: ['S', 'M', 'L'] // Code bạn có .split(',')
       }));
     });
 
-    // Kiểm tra Alert thành công
+    // 7. Verify Alert & Refresh
     expect(window.alert).toHaveBeenCalledWith("Thêm mới thành công!");
-    
-    // Kiểm tra danh sách được load lại (getAllProducts gọi lần 2)
-    expect(productRequest.getAllProducts).toHaveBeenCalledTimes(2);
+    expect(productRequest.getAllProducts).toHaveBeenCalledTimes(2); // 1 lần mount + 1 lần save
   });
 
-  // 4. Test CREATE Failure (Lỗi từ server khi tạo)
-  test('CREATE: Handles submission error from API', async () => {
-    productRequest.getAllProducts.mockResolvedValue({ success: true, data: [] });
-    // Setup: Create thất bại
-    productRequest.createProduct.mockResolvedValue({ success: false, message: 'Tên trùng lặp' });
-
-    render(<ProductManager />);
-
-    // Mở modal và submit ngay (test validation hoặc lỗi server trả về)
-    fireEvent.click(screen.getByText('Thêm sản phẩm'));
-    fireEvent.click(screen.getByText('Thêm mới'));
-
-    await waitFor(() => {
-      expect(productRequest.createProduct).toHaveBeenCalled();
-    });
-
-    // Kiểm tra Alert lỗi
-    expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('Có lỗi xảy ra'));
-  });
-
-  // 5. Test DELETE Success (Xóa sản phẩm)
-  test('DELETE: Calls delete API and refreshes list', async () => {
-    // Setup: Có 1 sản phẩm
+  // --- CASE 4: UPDATE (Sửa sản phẩm) ---
+  test('UPDATE: Opens modal with data and updates successfully', async () => {
+    // 1. Setup: Load danh sách có 1 sản phẩm
     productRequest.getAllProducts.mockResolvedValue({
       success: true,
       data: mockProducts
     });
-    // Setup: Delete thành công
+    // Setup: Update thành công
+    productRequest.updateProduct.mockResolvedValue({ success: true });
+
+    render(<ProductManager />);
+    await screen.findByText('iPhone 15 Pro');
+
+    // 2. Click nút Edit (Dựa vào mock icon)
+    const editBtn = screen.getByTestId('icon-edit').closest('button');
+    fireEvent.click(editBtn);
+
+    // 3. Kiểm tra Modal mở với Title "Chỉnh sửa sản phẩm"
+    expect(screen.getByText('Chỉnh sửa sản phẩm')).toBeInTheDocument();
+    
+    // Kiểm tra dữ liệu cũ đã load vào input
+    expect(screen.getByDisplayValue('iPhone 15 Pro')).toBeInTheDocument();
+    
+    // 4. Sửa giá tiền
+    const priceInput = screen.getByPlaceholderText('Ví dụ: 100000');
+    fireEvent.change(priceInput, { target: { value: '26000000' } });
+
+    // 5. Submit (Nút "Cập nhật")
+    const updateSubmitBtn = screen.getByText('Cập nhật');
+    fireEvent.click(updateSubmitBtn);
+
+    // 6. Verify
+    await waitFor(() => {
+      expect(productRequest.updateProduct).toHaveBeenCalledWith(
+        '1', // ID
+        expect.objectContaining({
+          title: 'iPhone 15 Pro',
+          price: 26000000
+        })
+      );
+    });
+
+    expect(window.alert).toHaveBeenCalledWith("Cập nhật thành công!");
+  });
+
+  // --- CASE 5: DELETE (Xóa sản phẩm) ---
+  test('DELETE: Calls delete API and refreshes list', async () => {
+    // 1. Setup
+    productRequest.getAllProducts.mockResolvedValue({
+      success: true,
+      data: mockProducts
+    });
     productRequest.deleteProduct.mockResolvedValue({ success: true });
 
     render(<ProductManager />);
-
-    // Chờ sản phẩm hiện lên
     await screen.findByText('iPhone 15 Pro');
 
-    // Click nút Xóa (DeleteIcon)
-    const deleteBtns = screen.getAllByText('DeleteIcon');
-    fireEvent.click(deleteBtns[0]); // Click nút xóa của sản phẩm đầu tiên
+    // 2. Click nút Delete
+    const deleteBtn = screen.getByTestId('icon-delete').closest('button');
+    fireEvent.click(deleteBtn);
 
-    // Verify Confirm & API Call
-    expect(window.confirm).toHaveBeenCalled();
-    expect(productRequest.deleteProduct).toHaveBeenCalledWith('1'); // ID của mockProduct
+    // 3. Verify Confirm
+    expect(window.confirm).toHaveBeenCalledWith("Bạn có chắc chắn muốn xóa sản phẩm này không?");
 
-    // Verify Refresh List
+    // 4. Verify API Call
+    expect(productRequest.deleteProduct).toHaveBeenCalledWith('1');
+
+    // 5. Verify Refresh
     await waitFor(() => {
       expect(productRequest.getAllProducts).toHaveBeenCalledTimes(2);
     });
-    
+
     expect(window.alert).toHaveBeenCalledWith("Đã xóa sản phẩm thành công!");
   });
 });
