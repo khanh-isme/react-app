@@ -158,3 +158,85 @@
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+
+/* --- PHẦN PREVIEW ẢNH --- */
+
+/* Khung bao quanh ảnh preview */
+.pfm-image-preview-container {
+  width: 100%;
+  height: 220px; /* Cố định chiều cao khung này để giao diện không bị nhảy */
+  background-color: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  position: relative;
+}
+
+/* Ảnh hiển thị bên trong */
+.pfm-image-preview {
+  max-width: 100%;      /* Không tràn chiều ngang */
+  max-height: 160px;    /* Giới hạn chiều cao tối đa (QUAN TRỌNG) */
+  object-fit: contain;  /* Giữ nguyên tỷ lệ ảnh, không bị méo/kéo dãn */
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Nút xóa ảnh */
+.pfm-remove-img-btn {
+  margin-top: 10px;
+  background-color: #ef4444; /* Màu đỏ */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.2s;
+}
+
+.pfm-remove-img-btn:hover {
+  background-color: #dc2626;
+}
+
+/* Tùy chỉnh lại khung upload box cho đồng bộ chiều cao */
+.pfm-upload-box {
+  width: 100%;
+  height: 220px; /* Khớp với height của container preview */
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9fafb;
+  position: relative;
+}
+
+.pfm-file-input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.pfm-upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #6b7280;
+  pointer-events: none; /* Để click xuyên qua vào input */
+}
+
+.pfm-upload-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+  color: #9ca3af;
+}

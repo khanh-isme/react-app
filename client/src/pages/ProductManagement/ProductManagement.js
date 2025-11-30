@@ -10,6 +10,9 @@ const ProductManager = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 1. STATE TÌM KIẾM
+  const [searchTerm, setSearchTerm] = useState('');
+
   // --- State quản lý Modal ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -56,24 +59,32 @@ const ProductManager = () => {
   };
 
   // --- Handlers cho Modal ---
-  
-  // Mở modal thêm mới
   const handleCreate = () => {
-    setEditingProduct(null); // Reset data để form trống
+    setEditingProduct(null);
     setIsModalOpen(true);
   };
 
-  // Mở modal chỉnh sửa
   const handleEdit = (product) => {
-    setEditingProduct(product); // Truyền data sản phẩm vào form
+    setEditingProduct(product);
     setIsModalOpen(true);
   };
 
-  // Đóng modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingProduct(null);
   };
+
+  // 2. LOGIC LỌC SẢN PHẨM (Client-side Search)
+  const filteredProducts = products.filter((product) => {
+    if (!searchTerm) return true; // Nếu ô tìm kiếm rỗng, hiện tất cả
+
+    const lowerTerm = searchTerm.toLowerCase();
+    const title = product.title?.toLowerCase() || '';
+    const category = product.category?.toLowerCase() || '';
+
+    // Tìm theo Tên HOẶC Danh mục
+    return title.includes(lowerTerm) || category.includes(lowerTerm);
+  });
 
   return (
     <div className="pm-container">
@@ -99,10 +110,13 @@ const ProductManager = () => {
 
       <div className="pm-search-container">
         <FaSearch className="pm-search-icon" />
+        {/* 3. INPUT TÌM KIẾM ĐÃ CẬP NHẬT */}
         <input 
           type="text" 
           placeholder="Tìm kiếm sản phẩm theo tên hoặc danh mục..." 
           className="pm-search-input"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
@@ -122,8 +136,9 @@ const ProductManager = () => {
               </tr>
             </thead>
             <tbody>
-              {products.length > 0 ? (
-                products.map((product) => (
+              {/* 4. SỬ DỤNG filteredProducts ĐỂ HIỂN THỊ */}
+              {filteredProducts.length > 0 ? (
+                filteredProducts.map((product) => (
                   <tr key={product._id}>
                     <td>
                       <img 
@@ -158,7 +173,6 @@ const ProductManager = () => {
                     </td>
                     <td className="text-center">
                       <div className="pm-actions">
-                        {/* Gắn sự kiện mở modal chỉnh sửa */}
                         <button 
                           className="pm-action-btn edit" 
                           onClick={() => handleEdit(product)}
@@ -178,7 +192,7 @@ const ProductManager = () => {
               ) : (
                 <tr>
                   <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
-                    Không có sản phẩm nào.
+                    {searchTerm ? "Không tìm thấy kết quả phù hợp." : "Không có sản phẩm nào."}
                   </td>
                 </tr>
               )}

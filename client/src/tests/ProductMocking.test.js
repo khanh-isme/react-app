@@ -26,7 +26,7 @@ jest.mock("react-icons/io5", () => ({
 
 describe('5.2.1 Frontend Mocking - ProductManager & Modal', () => {
   
-  // Dữ liệu giả lập
+  // Dữ liệu giả lậpa
   const mockProducts = [
     {
       _id: '1',

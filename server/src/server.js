@@ -28,6 +28,12 @@ app.use(cookieParser());// để đọc cookie
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Tăng giới hạn JSON lên 50MB (đủ cho ảnh chất lượng cao)
+app.use(express.json({ limit: '50mb' })); 
+
+// Tăng giới hạn cho urlencoded (form data)
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
 app.use(
   cors({
     origin: [`http://localhost:${PORT_CLIENT}`], // cho phép React client
