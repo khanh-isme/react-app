@@ -8,9 +8,9 @@ on:
 
 jobs:
 
-  # ----------------------------------------------------------
-  #  JOB 1 — BACKEND UNIT TESTS (Jest)
-  # ----------------------------------------------------------
+  # ---------------------------------------------
+  # JOB 1 — BACKEND UNIT TESTS
+  # ---------------------------------------------
   backend-test:
     name: Backend Unit Tests
     runs-on: ubuntu-latest
@@ -19,35 +19,30 @@ jobs:
         working-directory: ./server
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm
           cache-dependency-path: server/package-lock.json
 
-      - name: Install Dependencies
-        run: npm install
+      - run: npm install
 
-      - name: Run Backend Tests
-        run: npm test -- --coverage
+      - run: npm test -- --coverage
         env:
           JWT_SECRET: "test-ci-secret"
           PORT: 5000
 
-      - name: Upload Backend Coverage
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: backend-coverage
           path: server/coverage
 
 
-  # ----------------------------------------------------------
-  #  JOB 2 — FRONTEND TESTS (React + Jest + RTL)
-  # ----------------------------------------------------------
+  # ---------------------------------------------
+  # JOB 2 — FRONTEND UNIT TESTS
+  # ---------------------------------------------
   frontend-test:
     name: Frontend Unit Tests
     runs-on: ubuntu-latest
@@ -56,103 +51,94 @@ jobs:
         working-directory: ./client
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm
           cache-dependency-path: client/package-lock.json
 
-      - name: Install Dependencies
-        run: npm install
+      - run: npm install
 
-      - name: Run Component Tests
-        run: npm test -- --coverage
+      - run: npm test -- --coverage
         env:
           CI: true
 
-      - name: Upload Frontend Coverage
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage
           path: client/coverage
 
 
-  # ----------------------------------------------------------
-  #  JOB 3 — E2E TESTS (Cypress + MongoDB + Backend)
-  # ----------------------------------------------------------
+  # ---------------------------------------------
+  # JOB 3 — CYPRESS + MONGODB + BACKEND
+  # ---------------------------------------------
   e2e-test:
     name: E2E Login & Product Tests
     runs-on: ubuntu-latest
 
     services:
       mongodb:
-        image: mongo:6.0 # FIX 1: Ghim version cụ thể thay vì latest
+        image: mongo:6.0
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'" 
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        # FIX 2 (Ở trên): Dùng 'mongosh' thay vì 'mongo'
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       # --- BACKEND ---
-      - name: Setup Node.js (Backend)
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm
           cache-dependency-path: server/package-lock.json
 
-      - name: Install Backend Dependencies
+      - name: Install Backend
         working-directory: ./server
         run: npm install
 
-      - name: Start Backend Server
+      - name: Start Backend
         working-directory: ./server
         run: |
           nohup npm start &
-          sleep 5
+          sleep 8
         env:
           PORT: 5000
-          # Lưu ý: GitHub Actions map service port ra localhost
           MONGODB_URI: mongodb://localhost:27017/test_db
-          JWT_SECRET: ${{ secrets.JWT_SECRET || 'fallback-secret-for-ci' }}
+          JWT_SECRET: "ci-test-secret"
 
-      - name: Wait for Backend API
+      - name: Wait Backend Ready
         run: npx wait-on http://localhost:5000 --timeout 60000
 
+
       # --- FRONTEND + CYPRESS ---
-      - name: Install Frontend Dependencies
+      - name: Install Frontend
         working-directory: ./client
         run: npm install
 
-      - name: Cypress Run
+      - name: Run Cypress Tests
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./client
-          # SỬA Ở ĐÂY: Chỉ để lệnh chạy server, không kèm biến môi trường phía trước
           start: npm start
           browser: chrome
-          wait-on: 'http://localhost:3000'
+          wait-on: "http://localhost:3000"
           wait-on-timeout: 120
         env:
-          # CHUYỂN BIẾN MÔI TRƯỜNG XUỐNG ĐÂY
-          CI: true 
+          CI: true
           CYPRESS_baseUrl: http://localhost:3000
-          REACT_APP_API_URL: http://localhost:5000
+          REACT_APP_API_URL: http://localhost:5000   # <—— ĐÃ FIX QUAN TRỌNG
+
 
       - name: Upload Cypress Artifacts
-        uses: actions/upload-artifact@v4
         if: failure()
+        uses: actions/upload-artifact@v4
         with:
           name: cypress-report
           path: |
