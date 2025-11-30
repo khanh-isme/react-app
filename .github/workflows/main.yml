@@ -133,7 +133,7 @@ jobs:
         env:
           CI: true
           CYPRESS_baseUrl: http://localhost:3000
-          REACT_APP_API_URL: http://localhost:5000   # <—— ĐÃ FIX QUAN TRỌNG
+          REACT_APP_API_URL: http://localhost:5000  
 
 
       - name: Upload Cypress Artifacts
