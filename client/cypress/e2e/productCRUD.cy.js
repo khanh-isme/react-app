@@ -21,7 +21,7 @@ describe('6.2.2 Product CRUD Operations', () => {
   beforeEach(() => {
     // 1. Đăng nhập trước mỗi test
     loginPage.visit();
-    loginPage.login("k", "1"); // Sửa user/pass cho đúng DB của bạn
+    loginPage.login("k", "1"); 
     cy.wait(1000); 
 
     // 2. Vào trang quản lý

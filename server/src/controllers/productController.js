@@ -19,7 +19,7 @@ export const getAllProducts = async (req, res) => {
   try {
     // Lấy page và limit từ query ?page=1&limit=10
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 30;
 
     const result = await productService.getAllProducts(page, limit);
 

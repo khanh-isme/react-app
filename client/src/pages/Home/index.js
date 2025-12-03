@@ -4,7 +4,7 @@ import styles  from "./Home.module.scss"
 import { AuthContext } from "../../redux/AuthContext";
 import {Notification} from "../../components/Notification/Notification.js";
 import InstagramPost from "../Post/InstagramPost.js";
-import testImg from "./test.jpg"
+import testImg from "./2.webp"
 function Home() {
   const [message, setMessage] = useState("");
   const userdemo = localStorage.getItem("user");

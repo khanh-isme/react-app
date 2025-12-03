@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:5000/api/products';
 
 // 1. READ ALL: Lấy sản phẩm (Đã nâng cấp hỗ trợ Phân trang)
 // Mặc định lấy trang 1, 10 sản phẩm
-export const getAllProducts = async (page = 1, limit = 10) => {
+export const getAllProducts = async (page = 1, limit = 40) => {
   try {
     // Thêm query param vào URL: ?page=1&limit=10
     const url = `${API_URL}?page=${page}&limit=${limit}`;
