@@ -19,14 +19,21 @@ describe('6.2.2 Product CRUD Operations', () => {
   };
 
   beforeEach(() => {
-    // 1. Đăng nhập trước mỗi test
-    loginPage.visit();
-    loginPage.login("k", "1"); 
-    cy.wait(1000); 
+  loginPage.visit();
+  loginPage.login("k", "1");
+  cy.wait(800);
 
-    // 2. Vào trang quản lý
-    ProductPage.visit();
-  });
+  // Điều hướng đúng theo UI thật: Sidebar → Product Management
+  loginPage.goToProductPage();
+
+  // Xác nhận đã vào trang Product
+  cy.url().should("include", "/productmanagement");
+
+  // Đảm bảo nút Add Product và bảng tồn tại
+  ProductPage.elements.addProductBtn().should("be.visible");
+  ProductPage.elements.table().should("exist");
+});
+
 
   // --- a) Test Create product flow (0.5 điểm) ---
   it('a) Create: Nên thêm mới sản phẩm thành công', () => {

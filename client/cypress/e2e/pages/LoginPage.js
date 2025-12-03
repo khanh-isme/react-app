@@ -23,6 +23,13 @@ class LoginPage {
     this.typePassword(password);
     this.clickLogin();
   }
+
+  goToProductPage() {
+  cy.contains("span", "Product Management")
+    .should("be.visible")
+    .click();
+}
+
 }
 
 export const loginPage = new LoginPage();
