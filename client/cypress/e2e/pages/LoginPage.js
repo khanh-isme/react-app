@@ -37,17 +37,19 @@ class LoginPage {
   // 1. Chờ login redirect xong
   cy.url().should("include", "/");
 
-  // 2. Chờ Sidebar Header xuất hiện
-  cy.get("nav").should("be.visible");
+  // 2. Reload để AuthContext đọc user từ localStorage
+  cy.reload();
 
-  // 3. Chờ menu được render (có chữ Product Management bất kỳ)
-  cy.contains("span", "Product Management", { timeout: 8000 })
-    .should("be.visible")
-    .click();
+  // 3. Chờ sidebar hiển thị
+  cy.get("nav", { timeout: 8000 }).should("be.visible");
 
-  // 4. Kiểm tra đã vào đúng trang
+  // 4. Click vào text Product Management
+  cy.contains("span", "Product Management", { timeout: 8000 }).click();
+
+  // 5. Kiểm tra đã vào trang
   cy.url().should("include", "/productmanagement");
 }
+
 
 }
 
