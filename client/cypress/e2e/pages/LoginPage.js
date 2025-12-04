@@ -34,15 +34,21 @@ class LoginPage {
   }
 
   goToProductPage() {
-    // Chờ login redirect xong
-    cy.url().should("include", "/");
+  // 1. Chờ login redirect xong
+  cy.url().should("include", "/");
 
-    // Tìm Link chính xác đến productmanagement
-    cy.get('a[href="/productmanagement"]').should("exist").click();
+  // 2. Chờ Sidebar Header xuất hiện
+  cy.get("nav").should("be.visible");
 
-    // Xác nhận đã vào trang Product Management
-    cy.url().should("include", "/productmanagement");
-  }
+  // 3. Chờ menu được render (có chữ Product Management bất kỳ)
+  cy.contains("span", "Product Management", { timeout: 8000 })
+    .should("be.visible")
+    .click();
+
+  // 4. Kiểm tra đã vào đúng trang
+  cy.url().should("include", "/productmanagement");
+}
+
 }
 
 export const loginPage = new LoginPage();
